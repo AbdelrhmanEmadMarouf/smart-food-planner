@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Smart-Food-Planner</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment"> HOME</string>
+    <string name="home_item">Home</string>
+    <string name="search_item">Search</string>
+    <string name="calender_item">Calender</string>
+    <string name="ai_assistant_item">AI Assistant</string>
+    <string name="ask_ai_about_your_meal">ASK AI About Your Meal</string>
+    <string name="type_a_message">Type a message...</string>
+    <string name="send">Send</string>
+</resources>
