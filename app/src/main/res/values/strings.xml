@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Smart-Food-Planner</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment"> HOME</string>
+    <string name="home_item">Home</string>
+    <string name="search_item">Search</string>
+    <string name="calender_item">Calender</string>
+    <string name="ai_assistant_item">AI Assistant</string>
+    <string name="ask_ai_about_your_meal">ASK AI About Your Meal</string>
+    <string name="type_a_message">Type a message...</string>
+    <string name="send">Send</string>
+    <string name="plan_your_weekly_nutrition">Plan your weekly nutrition</string>
+    <string name="prev">prev</string>
+    <string name="october_2025">October 2025</string>
+    <string name="next">next</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
+    <string name="weekly_progress">Weekly Progress</string>
+    <string name="_12_21_meals_planned">12 / 21 meals planned</string>
+    <string name="_57">57%</string>
+    <string name="back">back</string>
+    <string name="manage_your_meals_plan">Manage Your Meals Plan</string>
+</resources>
