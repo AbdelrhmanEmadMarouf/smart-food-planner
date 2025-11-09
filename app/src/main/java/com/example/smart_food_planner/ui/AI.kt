@@ -66,7 +66,7 @@ class AI : Fragment() {
                 chatViewModel.sendRequest(messageFildText.text.toString())
                 messageFildText.text = ""
 
-                // إغلاق الكيبورد في Fragment
+
                 val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(messageFildText.windowToken, 0)
 

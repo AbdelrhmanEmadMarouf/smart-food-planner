@@ -9,4 +9,16 @@
     <string name="ask_ai_about_your_meal">ASK AI About Your Meal</string>
     <string name="type_a_message">Type a message...</string>
     <string name="send">Send</string>
+    <string name="plan_your_weekly_nutrition">Plan your weekly nutrition</string>
+    <string name="prev">prev</string>
+    <string name="october_2025">October 2025</string>
+    <string name="next">next</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
+    <string name="weekly_progress">Weekly Progress</string>
+    <string name="_12_21_meals_planned">12 / 21 meals planned</string>
+    <string name="_57">57%</string>
+    <string name="back">back</string>
+    <string name="manage_your_meals_plan">Manage Your Meals Plan</string>
 </resources>

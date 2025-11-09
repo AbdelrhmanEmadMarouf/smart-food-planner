@@ -1,14 +1,16 @@
 package com.example.smart_food_planner.model.remote
 
 import com.example.smart_food_planner.utils.BaseUrlOfGemeini
+import com.example.smart_food_planner.utils.BaseUrlOfMeals
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object Gemini_Retrofit_Instanse {
+object Meals_Instance {
 
-    fun getGeminiRetrofitInstance() : Retrofit{
+
+    fun getMealRetrofitInstance() : Retrofit{
         return  Retrofit.Builder()
-            .baseUrl(BaseUrlOfGemeini)
+            .baseUrl(BaseUrlOfMeals)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

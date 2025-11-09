@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_calender -> {
                     fragment = Calender()
+                    bottomNav.visibility = View.GONE
                 }
                 R.id.nav_ai -> {
                     fragment = AI()
