@@ -81,17 +81,16 @@
                 android:padding="14dp">
 
                 <!-- Native Calendar -->
+                <!-- layout.xml -->
                 <CalendarView
                     android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:theme="@style/CalendarViewTheme"
                     android:dateTextAppearance="@style/CalendarDateText"
-                    android:focusedMonthDateColor="#FFFFFF"
-                    android:selectedDateVerticalBar="@null"
-                    android:selectedWeekBackgroundColor="#335E6A"
-                    android:showWeekNumber="false"
-                    android:weekDayTextAppearance="@style/CalendarWeekDayText" />
+                    android:weekDayTextAppearance="@style/CalendarWeekDayText"
+                    android:showWeekNumber="false"/>
+
 
                 <!-- Go To Meals Button -->
                 <Button
