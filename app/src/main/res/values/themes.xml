@@ -11,16 +11,27 @@
 
 
         <style name="CalendarDateText">
-            <item name="android:textColor">#E6F0F6</item>
+            <item name="android:textColor">#FFFFFF</item>
             <item name="android:textSize">14sp</item>
             <item name="android:fontFamily">sans-serif-medium</item>
         </style>
 
         <style name="CalendarWeekDayText">
-            <item name="android:textColor">#A9D6D0</item>
+            <item name="android:textColor">#FBFDFD</item>
             <item name="android:textSize">12sp</item>
             <item name="android:fontFamily">sans-serif</item>
         </style>
+
+
+    <!-- styles.xml -->
+    <style name="CalendarViewTheme" parent="ThemeOverlay.AppCompat.Dark">
+        <!-- try overriding primary text colors the header might use -->
+        <item name="android:textColorPrimary">#FFFFFFFF</item>
+        <item name="android:textColorPrimaryInverse">#FFFFFFFF</item>
+        <item name="android:colorAccent">#00FF00</item>
+    </style>
+
+
 
     <style name="DialogCornerShape">
         <item name="cornerFamily">rounded</item>
@@ -66,6 +77,7 @@
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
+
 
 
 
