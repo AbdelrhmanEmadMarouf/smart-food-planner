@@ -3,4 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="card_dark_bg">#233D52</color>
+    <color name="search_icon_tint">#D9EAE8</color>
+    <color name="search_hint">#B7C1C3</color>
+    <color name="segment_selected_text">#00332A</color>
+    <color name="segment_unselected_text">#BFD6D8</color>
 </resources>
