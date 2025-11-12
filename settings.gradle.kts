@@ -16,9 +16,18 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+<<<<<<< HEAD
     }
 }
 
 rootProject.name = "HomeUI_FoodPlannerProject"
 include(":app")
  
+=======
+        
+    }
+}
+
+rootProject.name = "Smart-Food-Planner"
+include(":app")
+>>>>>>> 1b0f7fa545ce69c9aa292906525cb436b6327c39
