@@ -22,29 +22,14 @@ data class Meal(
 )
 
 
-
-data class CategoryNamesList(
+data class Countries_Name(
     @SerializedName("meals")
-    val categoriesNameList: List<CategoryName>
+    val countriesList: List<Country>
 )
 
-data class CategoryName(
-    @SerializedName("strCategory")
-    val strCategory: String
+data class Country(
+    val strArea: String
 )
-
-
-
-//data class ListOfCategoriesName(
-//    val CategoriesNamesList : MutableList<CategoryName>
-//)
-//data class ListOfCountriesName(
-////    val CountriesNameList : MutableList<String>
-////)
-//
-//data class CategoryName(
-//    val strCategory: String
-//)
 
 
 

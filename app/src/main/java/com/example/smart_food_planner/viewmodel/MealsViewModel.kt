@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smart_food_planner.data.repository.Meal_Repository
+import com.example.smart_food_planner.model.dataClasses.Country
 import com.example.smart_food_planner.model.dataClasses.Meal
 import kotlinx.coroutines.launch
 
@@ -25,5 +26,17 @@ class MealsViewModel : ViewModel() {
         }
 
     }
+
+    private val _countries = MutableLiveData<List<Country>>()
+    val countries: LiveData<List<Country>> get() = _countries
+
+    fun getListOfCountriesName() =viewModelScope.launch {
+        repository.getListOfCountriesName { countries ->
+            _countries.postValue(countries)
+        }
+    }
+
+
+
 
 }

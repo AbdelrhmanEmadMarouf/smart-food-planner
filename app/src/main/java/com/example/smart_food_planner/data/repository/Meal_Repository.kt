@@ -1,7 +1,9 @@
 package com.example.smart_food_planner.data.repository
 
+
 import android.util.Log
-import com.example.smart_food_planner.model.dataClasses.CategoryNamesList
+import com.example.smart_food_planner.model.dataClasses.Countries_Name
+import com.example.smart_food_planner.model.dataClasses.Country
 import com.example.smart_food_planner.model.dataClasses.Meal
 import com.example.smart_food_planner.model.dataClasses.Meals
 import com.example.smart_food_planner.model.remote.Meals_Instance
@@ -38,34 +40,30 @@ class Meal_Repository() {
         })
     }
 
-//    fun getListOfCategoriesName(){
-//        MealServiceObject.getListOfCategoriesName()
-//            .enqueue(object : Callback<CategoryNamesList>{
-//                override fun onResponse(
-//                    request: Call<CategoryNamesList?>,
-//                    response: Response<CategoryNamesList?>
-//                ) {
-//                    if(response.isSuccessful){
-//                        Log.d("Testt", "onResponse: ${response.code()}")
-//                        Log.d("Testt", "onResponse: ${response.body()?.categoriesNameList.toString()}")
-//                        val list = response.body()?.categoriesNameList
-//
-//                        list?.forEach {
-//                            Log.d("Testt", "onResponse: ${it.strCategory}")
-//                        }
-//
-//                    }
-//                }
-//
-//                override fun onFailure(
-//                    request: Call<CategoryNamesList?>,
-//                    throwable: Throwable
-//                ) {
-//                    Log.i("Error", "onFailure: ${throwable.message.toString()}")
-//                }
-//
-//            })
-//    }
+
+
+        fun getListOfCountriesName(callback:(List<Country>) -> Unit){
+
+            MealServiceObject.getListOfCountriesName().enqueue(object : Callback<Countries_Name> {
+                override fun onResponse(
+                    request: Call<Countries_Name?>,
+                    response: Response<Countries_Name?>
+                ) {
+                    if(response.isSuccessful){
+                        callback(response.body()!!.countriesList)
+                    }
+                }
+
+                override fun onFailure(
+                    request: Call<Countries_Name?>,
+                    throwable: Throwable
+                ) {
+                    Log.d("Error", "onFailure: ${throwable.message.toString()}")
+                }
+
+            })
+        }
+
 
 
 }
