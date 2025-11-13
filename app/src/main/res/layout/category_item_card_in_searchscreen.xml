@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:background="@drawable/chat_background"
+   >
+
+    <LinearLayout
+        android:background="@drawable/dark_card_bg_with_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- header -->
+        <TextView
+            android:id="@+id/Category_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingStart="12dp"
+            android:gravity="center_vertical"
+            android:text="Title"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:background="@drawable/header_bg"/>
+
+        <!-- image container: ثبّت ارتفاع ثابت لجمالية الشبكة -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:clipToPadding="false">
+
+            <!-- ShapeableImageView لزوايا مستديرة -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/Category_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+               />
+
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

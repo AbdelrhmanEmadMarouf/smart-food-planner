@@ -2,36 +2,35 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="28dp"
     android:paddingBottom="16dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:background="@drawable/chat_background">
+
+    android:background="@drawable/chat_background"
+    tools:context=".ui.Categoty_Name_Fragment">
 
     <!-- Search pill -->
     <LinearLayout
         android:id="@+id/search_container"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
         android:background="@drawable/pill_search"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- use AppCompatImageView so app:tint يعمل بثبات -->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ic_search"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_search"
-             />
+            android:src="@drawable/ic_search" />
 
         <EditText
             android:id="@+id/et_search"
@@ -51,6 +50,8 @@
     <!-- Segment buttons -->
     <LinearLayout
         android:id="@+id/segment_container"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:orientation="horizontal"
@@ -59,7 +60,9 @@
         app:layout_constraintTop_toBottomOf="@id/search_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:weightSum="3">
+        android:weightSum="3"
+
+        >
 
         <TextView
             android:id="@+id/btn_category"
@@ -100,31 +103,15 @@
             android:textColor="@color/segment_unselected_text"/>
     </LinearLayout>
 
-    <!-- Scrollable grid using NestedScrollView + GridLayout -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nested_scroll"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="com.example.smart_food_planner.ui.Categoty_Name_Fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
-        android:clipToPadding="false"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        app:layout_constraintTop_toBottomOf="@id/segment_container"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-
-<!--            &lt;!&ndash; ضع هنا includes أو inflate ديناميكي لبطاقات الوجبات &ndash;&gt;-->
-<!--            &lt;!&ndash; مثال: include واحد كعنصر توضيحي &ndash;&gt;-->
-<!--&lt;!&ndash;            <include layout="@layout/item_meal" />&ndash;&gt;-->
-
-<!--            &lt;!&ndash; كرر الـ include حسب الحاجة أو قم بإنشاء العناصر برمجياً &ndash;&gt;-->
-<!--        </LinearLayout>-->
-    </androidx.core.widget.NestedScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/segment_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

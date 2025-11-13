@@ -63,6 +63,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.fragment)
 
     // Debug Tools (optional)
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")

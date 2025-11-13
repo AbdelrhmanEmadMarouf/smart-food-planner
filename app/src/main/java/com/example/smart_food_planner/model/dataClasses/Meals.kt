@@ -20,3 +20,34 @@ data class Meal(
     @SerializedName("strCategoryThumb")
     val strMealUrl: String
 )
+
+
+
+data class CategoryNamesList(
+    @SerializedName("meals")
+    val categoriesNameList: List<CategoryName>
+)
+
+data class CategoryName(
+    @SerializedName("strCategory")
+    val strCategory: String
+)
+
+
+
+//data class ListOfCategoriesName(
+//    val CategoriesNamesList : MutableList<CategoryName>
+//)
+//data class ListOfCountriesName(
+////    val CountriesNameList : MutableList<String>
+////)
+//
+//data class CategoryName(
+//    val strCategory: String
+//)
+
+
+
+
+
+

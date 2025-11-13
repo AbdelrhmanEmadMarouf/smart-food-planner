@@ -1,11 +1,9 @@
 package com.example.smart_food_planner.data.repository
 
 import android.util.Log
-import com.example.smart_food_planner.database.dao.MealDao
+import com.example.smart_food_planner.model.dataClasses.CategoryNamesList
 import com.example.smart_food_planner.model.dataClasses.Meal
 import com.example.smart_food_planner.model.dataClasses.Meals
-import com.example.smart_food_planner.model.remote.GeminiApiService
-import com.example.smart_food_planner.model.remote.Gemini_Retrofit_Instanse
 import com.example.smart_food_planner.model.remote.Meals_Instance
 import com.example.smart_food_planner.model.remote.Meals_Service
 import retrofit2.Callback
@@ -38,9 +36,37 @@ class Meal_Repository() {
             }
 
         })
-
-
     }
+
+//    fun getListOfCategoriesName(){
+//        MealServiceObject.getListOfCategoriesName()
+//            .enqueue(object : Callback<CategoryNamesList>{
+//                override fun onResponse(
+//                    request: Call<CategoryNamesList?>,
+//                    response: Response<CategoryNamesList?>
+//                ) {
+//                    if(response.isSuccessful){
+//                        Log.d("Testt", "onResponse: ${response.code()}")
+//                        Log.d("Testt", "onResponse: ${response.body()?.categoriesNameList.toString()}")
+//                        val list = response.body()?.categoriesNameList
+//
+//                        list?.forEach {
+//                            Log.d("Testt", "onResponse: ${it.strCategory}")
+//                        }
+//
+//                    }
+//                }
+//
+//                override fun onFailure(
+//                    request: Call<CategoryNamesList?>,
+//                    throwable: Throwable
+//                ) {
+//                    Log.i("Error", "onFailure: ${throwable.message.toString()}")
+//                }
+//
+//            })
+//    }
 
 
 }
+
