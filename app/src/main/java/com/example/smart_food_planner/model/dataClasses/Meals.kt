@@ -31,8 +31,18 @@ data class Country(
     val strArea: String
 )
 
+data class Ingrediants(
+    @SerializedName("meals")
+    val Ingrediants_list: List<Ingrediant_Item>
+)
 
-
+data class Ingrediant_Item(
+    val idIngredient: String,
+    val strDescription: String,
+    val strIngredient: String,
+    val strThumb: String,
+    val strType: String
+)
 
 
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smart_food_planner.data.repository.Meal_Repository
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
 import com.example.smart_food_planner.model.dataClasses.Meal
 import kotlinx.coroutines.launch
 
@@ -35,6 +36,33 @@ class MealsViewModel : ViewModel() {
             _countries.postValue(countries)
         }
     }
+
+
+    private val _ingrediantsList = MutableLiveData<List<Ingrediant_Item>>()
+    val ingrediantsList: LiveData<List<Ingrediant_Item>> get() = _ingrediantsList
+
+    fun getListOfIngrediants() =viewModelScope.launch {
+        repository.getIngrediants_List { IngrediantsList ->
+            _ingrediantsList.postValue(IngrediantsList)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

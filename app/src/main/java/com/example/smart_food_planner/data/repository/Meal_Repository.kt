@@ -4,6 +4,8 @@ package com.example.smart_food_planner.data.repository
 import android.util.Log
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
+import com.example.smart_food_planner.model.dataClasses.Ingrediants
 import com.example.smart_food_planner.model.dataClasses.Meal
 import com.example.smart_food_planner.model.dataClasses.Meals
 import com.example.smart_food_planner.model.remote.Meals_Instance
@@ -64,6 +66,28 @@ class Meal_Repository() {
             })
         }
 
+    fun getIngrediants_List(callback: (List<Ingrediant_Item>) -> Unit){
+
+        MealServiceObject.getListOfIngretiants()
+            .enqueue(object : Callback<Ingrediants>{
+                override fun onResponse(
+                    request: Call<Ingrediants?>,
+                    response: Response<Ingrediants?>
+                ) {
+                    if(response.isSuccessful){
+                        callback(response.body()!!.Ingrediants_list)
+                    }
+                }
+
+                override fun onFailure(
+                    request: Call<Ingrediants?>,
+                    throwable: Throwable
+                ) {
+                    Log.d("Error", "onFailure: ${throwable.message.toString()}")
+                }
+            })
+
+    }
 
 
 }

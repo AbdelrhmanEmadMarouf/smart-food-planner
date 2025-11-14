@@ -59,6 +59,7 @@ class Search : Fragment() {
             make_all_buttons_unselected()
             btn_ingredients.setBackgroundResource(R.drawable.segment_selected)
             btn_ingredients.setTextColor(ContextCompat.getColor(requireContext(), R.color.segment_selected_text))
+            loadFragment(Ingrediants_Fragment())
         }
         btn_country.setOnClickListener{
             make_all_buttons_unselected()

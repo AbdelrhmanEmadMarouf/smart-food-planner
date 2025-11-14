@@ -7,4 +7,9 @@
     <color name="search_hint">#B7C1C3</color>
     <color name="segment_selected_text">#00332A</color>
     <color name="segment_unselected_text">#BFD6D8</color>
+    <color name="info_strip">#223A4E</color>
+    <color name="accent_neon">#1ABC9C</color>
+    <color name="card_bg">#142D35</color>
+
+
 </resources>

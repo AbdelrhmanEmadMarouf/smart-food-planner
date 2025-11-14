@@ -1,6 +1,7 @@
 package com.example.smart_food_planner.ui.adapters
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import com.example.smart_food_planner.R
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.google.android.material.imageview.ShapeableImageView
 
 
 class Country_Names_Adapter(
@@ -33,40 +35,40 @@ class Country_Names_Adapter(
         holder.countryName.text = country.strArea
 
 
+
         when(holder.countryName.text){
-            "American" -> holder.countryImage.setBackgroundResource(R.drawable.american)
-            "Argentinian" -> holder.countryImage.setBackgroundResource(R.drawable.argentinian)
-            "Australian" -> holder.countryImage.setBackgroundResource(R.drawable.australian)
-            "British" -> holder.countryImage.setBackgroundResource(R.drawable.british)
-            "Canadian" -> holder.countryImage.setBackgroundResource(R.drawable.canadian)
-            "Chinese" -> holder.countryImage.setBackgroundResource(R.drawable.chinese)
-            "Croatian" -> holder.countryImage.setBackgroundResource(R.drawable.croatian)
-            "Dutch" -> holder.countryImage.setBackgroundResource(R.drawable.dutch)
-            "Egyptian" -> holder.countryImage.setBackgroundResource(R.drawable.egyptian)
-            "Filipino" -> holder.countryImage.setBackgroundResource(R.drawable.filipino)
-            "French" -> holder.countryImage.setBackgroundResource(R.drawable.french)
-            "Greek" -> holder.countryImage.setBackgroundResource(R.drawable.greek)
-            "Indian" -> holder.countryImage.setBackgroundResource(R.drawable.indian)
-            "Irish" -> holder.countryImage.setBackgroundResource(R.drawable.irish)
-            "Italian" -> holder.countryImage.setBackgroundResource(R.drawable.italian)
-            "Jamaican" -> holder.countryImage.setBackgroundResource(R.drawable.jamaican)
-            "Japanese" -> holder.countryImage.setBackgroundResource(R.drawable.japanese)
-            "Kenyan" -> holder.countryImage.setBackgroundResource(R.drawable.kenyan)
-            "Malaysian" -> holder.countryImage.setBackgroundResource(R.drawable.malaysian)
-            "Mexican" -> holder.countryImage.setBackgroundResource(R.drawable.mexican)
-            "Moroccan" -> holder.countryImage.setBackgroundResource(R.drawable.moroccan)
-            "Norwegian" -> holder.countryImage.setBackgroundResource(R.drawable.norwegian)
-            "Polish" -> holder.countryImage.setBackgroundResource(R.drawable.polish)
-            "Portuguese" -> holder.countryImage.setBackgroundResource(R.drawable.portuguese)
-            "Russian" -> holder.countryImage.setBackgroundResource(R.drawable.russian)
-            "Spanish" -> holder.countryImage.setBackgroundResource(R.drawable.spanish)
-            "Syrian" -> holder.countryImage.setBackgroundResource(R.drawable.syrian)
-            "Thai" -> holder.countryImage.setBackgroundResource(R.drawable.thai)
-            "Tunisian" -> holder.countryImage.setBackgroundResource(R.drawable.tunisian)
-            "Turkish" -> holder.countryImage.setBackgroundResource(R.drawable.turkish)
-            "Ukrainian" -> holder.countryImage.setBackgroundResource(R.drawable.ukrainian)
-            "Uruguayan" -> holder.countryImage.setBackgroundResource(R.drawable.uruguayan)
-            "Vietnamese" -> holder.countryImage.setBackgroundResource(R.drawable.vietnamese)
+            "American" -> holder.countryImage.setImageResource(R.drawable.american)
+            "Argentinian" -> holder.countryImage.setImageResource(R.drawable.argentinian)
+            "Australian" -> holder.countryImage.setImageResource(R.drawable.australian)
+            "British" -> holder.countryImage.setImageResource(R.drawable.british)
+            "Canadian" -> holder.countryImage.setImageResource(R.drawable.canadian)
+            "Chinese" -> holder.countryImage.setImageResource(R.drawable.chinese)
+            "Croatian" -> holder.countryImage.setImageResource(R.drawable.croatian)
+            "Dutch" -> holder.countryImage.setImageResource(R.drawable.dutch)
+            "Egyptian" -> holder.countryImage.setImageResource(R.drawable.egyptian)
+            "Filipino" -> holder.countryImage.setImageResource(R.drawable.filipino)
+            "French" -> holder.countryImage.setImageResource(R.drawable.french)
+            "Greek" -> holder.countryImage.setImageResource(R.drawable.greek)
+            "Irish" -> holder.countryImage.setImageResource(R.drawable.irish)
+            "Italian" -> holder.countryImage.setImageResource(R.drawable.italian)
+            "Jamaican" -> holder.countryImage.setImageResource(R.drawable.jamaican)
+            "Japanese" -> holder.countryImage.setImageResource(R.drawable.japanese)
+            "Kenyan" -> holder.countryImage.setImageResource(R.drawable.kenyan)
+            "Malaysian" -> holder.countryImage.setImageResource(R.drawable.malaysian)
+            "Mexican" -> holder.countryImage.setImageResource(R.drawable.mexican)
+            "Moroccan" -> holder.countryImage.setImageResource(R.drawable.moroccan)
+            "Norwegian" -> holder.countryImage.setImageResource(R.drawable.norwegian)
+            "Polish" -> holder.countryImage.setImageResource(R.drawable.polish)
+            "Portuguese" -> holder.countryImage.setImageResource(R.drawable.portuguese)
+            "Russian" -> holder.countryImage.setImageResource(R.drawable.russian)
+            "Spanish" -> holder.countryImage.setImageResource(R.drawable.spanish)
+            "Syrian" -> holder.countryImage.setImageResource(R.drawable.syrian)
+            "Thai" -> holder.countryImage.setImageResource(R.drawable.thai)
+            "Tunisian" -> holder.countryImage.setImageResource(R.drawable.tunisian)
+            "Turkish" -> holder.countryImage.setImageResource(R.drawable.turkish)
+            "Ukrainian" -> holder.countryImage.setImageResource(R.drawable.ukrainian)
+            "Uruguayan" -> holder.countryImage.setImageResource(R.drawable.uruguayan)
+            "Vietnamese" -> holder.countryImage.setImageResource(R.drawable.vietnamese)
         }
 
 
@@ -76,7 +78,7 @@ class Country_Names_Adapter(
 
 
     inner class Country_Names_ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val countryImage: ImageView = itemView.findViewById(R.id.Country_image_view)
+        val countryImage: ShapeableImageView = itemView.findViewById(R.id.Country_image_view)
         val countryName: TextView = itemView.findViewById(R.id.Country_name)
     }
 
