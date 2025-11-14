@@ -20,8 +20,6 @@ class Search : Fragment() {
     private lateinit var btn_ingredients: TextView
     private lateinit var btn_country: TextView
 
-    private val mealRepository = Meal_Repository()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +40,8 @@ class Search : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
-//        mealRepository.getListOfCategoriesName()
 
+        loadFragment(Categoty_Name_Fragment())
 
         btn_category = view.findViewById(R.id.btn_category)
         btn_ingredients = view.findViewById(R.id.btn_ingredients)
@@ -55,6 +53,7 @@ class Search : Fragment() {
             make_all_buttons_unselected()
             btn_category.setBackgroundResource(R.drawable.segment_selected)
             btn_category.setTextColor(ContextCompat.getColor(requireContext(), R.color.segment_selected_text))
+            loadFragment(Categoty_Name_Fragment())
         }
         btn_ingredients.setOnClickListener{
             make_all_buttons_unselected()
@@ -65,20 +64,10 @@ class Search : Fragment() {
             make_all_buttons_unselected()
             btn_country.setBackgroundResource(R.drawable.segment_selected)
             btn_country.setTextColor(ContextCompat.getColor(requireContext(), R.color.segment_selected_text))
+            loadFragment(Country_Name_Fragment())
         }
 
 
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Search().apply {
-                arguments = Bundle().apply {
-
-                }
-            }
     }
 
 
@@ -92,5 +81,12 @@ class Search : Fragment() {
         btn_country.setBackgroundResource(R.drawable.segment_unselected)
         btn_country.setTextColor(ContextCompat.getColor(requireContext(), R.color.segment_unselected_text))
     }
+
+    private fun loadFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainerView, fragment)
+            .commit()
+    }
+
 
 }

@@ -5,20 +5,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.smart_food_planner.R
+import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.ui.adapters.Category_Names_Adapter
+import com.example.smart_food_planner.ui.adapters.Country_Names_Adapter
+import com.example.smart_food_planner.viewmodel.MealsViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [Country_Name_Fragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class Country_Name_Fragment : Fragment() {
 
+    private val mealViewModel : MealsViewModel by viewModels()
+
+    private lateinit var countriesNameRecyclerView : RecyclerView
+    private var countriesNameList = listOf<Country>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,25 @@ class Country_Name_Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        countriesNameRecyclerView = view.findViewById(R.id.recycler_countries_name)
 
+        val layoutAnim = AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation_grid)
+        countriesNameRecyclerView.layoutAnimation = layoutAnim
+
+
+        countriesNameRecyclerView.setHasFixedSize(true)
+
+        val spanCount = 2
+        countriesNameRecyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
+
+        mealViewModel.countries.observe(viewLifecycleOwner){list->
+            countriesNameList =list
+            countriesNameRecyclerView.adapter = Country_Names_Adapter(countriesNameList)
+            countriesNameRecyclerView.scheduleLayoutAnimation()
+
+        }
+
+        mealViewModel.getListOfCountriesName()
 
 
     }
