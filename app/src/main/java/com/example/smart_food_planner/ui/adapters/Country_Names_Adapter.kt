@@ -8,10 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.ui.Filtered_Meals
 import com.google.android.material.imageview.ShapeableImageView
 
 
@@ -72,6 +76,27 @@ class Country_Names_Adapter(
         }
 
 
+        holder.recyclerViewItem.setOnClickListener {
+
+
+
+            val fragment = Filtered_Meals()
+
+            val args = bundleOf(
+                "Fragment title" to holder.countryName.text,
+                "key" to "a"
+            )
+            fragment.arguments = args
+
+            val activity = holder.itemView.context as? AppCompatActivity
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.replace(R.id.container, fragment)
+                ?.addToBackStack(null)
+                ?.commit()
+        }
+
+
     }
 
     override fun getItemCount(): Int = Country_Cards_List.size
@@ -80,6 +105,9 @@ class Country_Names_Adapter(
     inner class Country_Names_ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val countryImage: ShapeableImageView = itemView.findViewById(R.id.Country_image_view)
         val countryName: TextView = itemView.findViewById(R.id.Country_name)
+
+        val recyclerViewItem : ConstraintLayout = itemView.findViewById(R.id.Country_Card_id)
+
     }
 
 }

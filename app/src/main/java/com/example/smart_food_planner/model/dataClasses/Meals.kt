@@ -45,4 +45,16 @@ data class Ingrediant_Item(
 )
 
 
+data class Filtered_Meals(
+    @SerializedName("meals")
+    val filteredMealsList: List<Filtered_Meal>
+)
+
+
+data class Filtered_Meal(
+    val idMeal: String,
+    val strMeal: String,
+    val strMealThumb: String
+)
+
 

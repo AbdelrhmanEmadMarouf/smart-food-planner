@@ -4,6 +4,8 @@ package com.example.smart_food_planner.data.repository
 import android.util.Log
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.model.dataClasses.Filtered_Meal
+import com.example.smart_food_planner.model.dataClasses.Filtered_Meals
 import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
 import com.example.smart_food_planner.model.dataClasses.Ingrediants
 import com.example.smart_food_planner.model.dataClasses.Meal
@@ -86,6 +88,32 @@ class Meal_Repository() {
                     Log.d("Error", "onFailure: ${throwable.message.toString()}")
                 }
             })
+
+    }
+
+    fun getFilteredMealsList(key: String?, value: String?, callback: (List<Filtered_Meal>) -> Unit){
+
+        val queryMap : Map<String,String> = mapOf(key to value) as Map<String, String>
+
+        MealServiceObject.filterMeals(queryMap)
+            .enqueue(object : Callback<Filtered_Meals>{
+                override fun onResponse(
+                    request: Call<Filtered_Meals?>,
+                    response: Response<Filtered_Meals?>
+                ) {
+                    if(response.isSuccessful){
+                        callback(response.body()!!.filteredMealsList)
+                    }
+                }
+
+                override fun onFailure(
+                    request: Call<Filtered_Meals?>,
+                    throwable: Throwable
+                ) {
+                    Log.d("Error", "onFailure: ${throwable.message.toString()}")
+                }
+            })
+
 
     }
 

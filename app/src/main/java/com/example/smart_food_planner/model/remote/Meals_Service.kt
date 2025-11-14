@@ -3,11 +3,13 @@ package com.example.smart_food_planner.model.remote
 
 
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
+import com.example.smart_food_planner.model.dataClasses.Filtered_Meals
 import com.example.smart_food_planner.model.dataClasses.Ingrediants
 import com.example.smart_food_planner.model.dataClasses.Meals
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface Meals_Service {
 
@@ -24,6 +26,13 @@ interface Meals_Service {
     fun getListOfIngretiants(
     @Query("i") ingrediant : String ="list"
     ): Call<Ingrediants>
+
+
+    @GET("filter.php")
+    fun filterMeals(
+        @QueryMap parameter : Map<String,String>
+    ): Call<Filtered_Meals>
+
 
 
 

@@ -17,7 +17,9 @@
     <!-- Constrain internal content size (you can change width as needed in RecyclerView item) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:id="@+id/Ingrediants_card_id"
+        >
 
         <!-- Image area (top) -->
         <FrameLayout

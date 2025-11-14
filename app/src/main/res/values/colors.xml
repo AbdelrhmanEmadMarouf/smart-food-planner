@@ -9,7 +9,17 @@
     <color name="segment_unselected_text">#BFD6D8</color>
     <color name="info_strip">#223A4E</color>
     <color name="accent_neon">#1ABC9C</color>
-    <color name="card_bg">#142D35</color>
+    <color name="card_bg">#223647</color>
+    <color name="thumb_bg">#E7EEF1</color>
+    <color name="title_white">#FFFFFF</color>
+    <color name="details_green">#1EB28A</color>
+    <color name="details_text">#052922</color>
+    <color name="heart_tint">#FFFFFF</color>
+    <color name="app_background">#0F1723</color>
+    <color name="shell_card_bg">#17353C</color>
+    <color name="muted_white">#9FB7BC</color>
+    <color name="purple_circle">#6C4BB3</color>
+
 
 
 </resources>

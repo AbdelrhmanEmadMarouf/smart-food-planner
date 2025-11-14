@@ -1,12 +1,12 @@
 package com.example.smart_food_planner.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smart_food_planner.data.repository.Meal_Repository
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.model.dataClasses.Filtered_Meal
 import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
 import com.example.smart_food_planner.model.dataClasses.Meal
 import kotlinx.coroutines.launch
@@ -49,15 +49,14 @@ class MealsViewModel : ViewModel() {
 
 
 
+    private val _filteredMeals = MutableLiveData<List<Filtered_Meal>>()
+    val filteredMeals : LiveData<List<Filtered_Meal>> get() = _filteredMeals
 
-
-
-
-
-
-
-
-
+    fun getFilteredMealsList(key: String?, value: String?) = viewModelScope.launch{
+        repository.getFilteredMealsList(key,value,{ filteredMealsList ->
+            _filteredMeals.postValue(filteredMealsList)
+        })
+    }
 
 
 
