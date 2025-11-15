@@ -3,6 +3,7 @@ package com.example.smart_food_planner.model.remote
 
 
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
+import com.example.smart_food_planner.model.dataClasses.Detailed_Meals
 import com.example.smart_food_planner.model.dataClasses.Filtered_Meals
 import com.example.smart_food_planner.model.dataClasses.Ingrediants
 import com.example.smart_food_planner.model.dataClasses.Meals
@@ -34,6 +35,10 @@ interface Meals_Service {
     ): Call<Filtered_Meals>
 
 
+    @GET("lookup.php")
+    fun getMealByID(
+        @Query("i") id: String?
+    ) : Call<Detailed_Meals>
 
 
 }

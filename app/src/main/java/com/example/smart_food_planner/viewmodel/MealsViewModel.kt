@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smart_food_planner.data.repository.Meal_Repository
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.model.dataClasses.Detailed_Meal
 import com.example.smart_food_planner.model.dataClasses.Filtered_Meal
 import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
 import com.example.smart_food_planner.model.dataClasses.Meal
@@ -59,6 +60,14 @@ class MealsViewModel : ViewModel() {
     }
 
 
+    private val _detiaildMeal = MutableLiveData<Detailed_Meal>()
+    val detailedMeal : LiveData<Detailed_Meal>  get() = _detiaildMeal
+
+    fun getMealBId(id: String?){
+        repository.getMealById(id,{listOfDetaildMeals->
+            _detiaildMeal.postValue(listOfDetaildMeals[0])
+        })
+    }
 
 
 

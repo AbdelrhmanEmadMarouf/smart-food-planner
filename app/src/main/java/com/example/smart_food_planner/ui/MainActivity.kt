@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_calender -> {
                     fragment = Calender()
-                    bottomNav.visibility = View.GONE
                 }
                 R.id.nav_ai -> {
                     fragment = AI()
@@ -74,6 +73,20 @@ class MainActivity : AppCompatActivity() {
             hideSystemUI()
         }
     }
+
+
+    fun setBottomNavVisible(visible: Boolean) {
+        if (visible && bottomNav.visibility != View.VISIBLE) {
+            bottomNav.animate().alpha(1f).setDuration(180).withStartAction {
+                bottomNav.visibility = View.VISIBLE
+            }
+        } else if (!visible && bottomNav.visibility == View.VISIBLE) {
+            bottomNav.animate().alpha(0f).setDuration(180).withEndAction {
+                bottomNav.visibility = View.GONE
+            }
+        }
+    }
+
 
 
 

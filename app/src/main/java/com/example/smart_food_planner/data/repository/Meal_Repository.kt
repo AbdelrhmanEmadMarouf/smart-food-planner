@@ -4,6 +4,8 @@ package com.example.smart_food_planner.data.repository
 import android.util.Log
 import com.example.smart_food_planner.model.dataClasses.Countries_Name
 import com.example.smart_food_planner.model.dataClasses.Country
+import com.example.smart_food_planner.model.dataClasses.Detailed_Meal
+import com.example.smart_food_planner.model.dataClasses.Detailed_Meals
 import com.example.smart_food_planner.model.dataClasses.Filtered_Meal
 import com.example.smart_food_planner.model.dataClasses.Filtered_Meals
 import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
@@ -111,6 +113,32 @@ class Meal_Repository() {
                     throwable: Throwable
                 ) {
                     Log.d("Error", "onFailure: ${throwable.message.toString()}")
+                }
+            })
+
+
+    }
+
+
+    fun getMealById(id: String?, callback: (List<Detailed_Meal>) -> Unit){
+
+
+        MealServiceObject.getMealByID(id)
+            .enqueue(object : Callback<Detailed_Meals>{
+                override fun onResponse(
+                    request: Call<Detailed_Meals?>,
+                    response : Response<Detailed_Meals?>
+                ) {
+                    if(response.isSuccessful){
+                        callback(response.body()!!.detailedMealsList)
+                    }
+                }
+
+                override fun onFailure(
+                    request: Call<Detailed_Meals?>,
+                    throwable: Throwable
+                ) {
+                    Log.d("ERROR", "onFailure: ${throwable.message.toString()}")
                 }
             })
 

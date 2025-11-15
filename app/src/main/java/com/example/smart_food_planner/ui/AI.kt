@@ -11,7 +11,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,6 +62,10 @@ class AI : Fragment() {
         SendButton = view.findViewById(R.id.buttonSend)
         backToHome = view.findViewById(R.id.back_to_home_arrow)
 
+
+
+        val MealId = arguments?.getString("Meal Id")
+
         SendButton.setOnClickListener {
             if (!messageFildText.text.isBlank()) {
                 addMessage(messageFildText.text.toString())
@@ -74,17 +80,34 @@ class AI : Fragment() {
         }
 
         backToHome.setOnClickListener {
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, home())
-                .commit()
-
-            val mainActivity = activity as MainActivity
-            val bottomNav = mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)
-            bottomNav.visibility = View.VISIBLE
 
 
-            bottomNav.selectedItemId = R.id.nav_home
+
+            val fragment = Details_Meal_Fragment()
+
+            val args = bundleOf(
+                "Meal Id" to MealId
+            )
+            fragment.arguments = args
+
+            val activity =context as? AppCompatActivity
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.replace(R.id.container, fragment)
+                ?.addToBackStack(null)
+                ?.commit()
+
+
+
+            (requireActivity() as? MainActivity)?.let { main ->
+                main.setBottomNavVisible(true)
+                main.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
 
         }
 

@@ -9,10 +9,14 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.smart_food_planner.model.dataClasses.Filtered_Meal
 import com.example.smart_food_planner.model.dataClasses.Meal
+import com.example.smart_food_planner.ui.Details_Meal_Fragment
+import com.example.smart_food_planner.ui.Filtered_Meals
 import com.example.smart_food_planner.viewmodel.Meal_Database_Viewmodel
 
 class Filtered_Meal_Adapter(
@@ -46,6 +50,21 @@ class Filtered_Meal_Adapter(
             .into(holder.mealImage)
 
         holder.mealDetailsButton.setOnClickListener {
+
+            val fragment = Details_Meal_Fragment()
+
+            val args = bundleOf(
+                "Meal Id" to meal.idMeal
+            )
+            fragment.arguments = args
+
+            val activity = holder.itemView.context as? AppCompatActivity
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.replace(R.id.container, fragment)
+                ?.addToBackStack(null)
+                ?.commit()
+
 
         }
 

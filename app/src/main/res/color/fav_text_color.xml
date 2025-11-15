@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- when selected (remove) use white text -->
+    <item android:color="@color/text_primary" android:state_selected="true" />
+    <!-- default: white too, but could be slightly transparent if needed -->
+    <item android:color="@color/text_primary" />
+</selector>

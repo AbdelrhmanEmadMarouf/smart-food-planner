@@ -50,6 +50,8 @@ android {
 
 dependencies {
 
+    // youtube library
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
 
     // ViewModel for fragment
     implementation("androidx.fragment:fragment-ktx:1.6.2")
