@@ -69,6 +69,16 @@ class MealsViewModel : ViewModel() {
         })
     }
 
+    private val _searchedMeals = MutableLiveData<List<Detailed_Meal>>()
+    val searchedMeals : LiveData<List<Detailed_Meal>> get() = _searchedMeals
+
+    fun getMealByName(mealName : String?){
+        repository.getMealByName(mealName,{list->
+            _searchedMeals.postValue(list)
+        })
+    }
+
+
 
 
 

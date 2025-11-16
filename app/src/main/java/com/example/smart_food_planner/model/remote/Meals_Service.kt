@@ -41,4 +41,10 @@ interface Meals_Service {
     ) : Call<Detailed_Meals>
 
 
+    @GET("search.php")
+    fun getMealByName(
+        @Query("s") mealName : String?
+    ) : Call<Detailed_Meals>
+
+
 }

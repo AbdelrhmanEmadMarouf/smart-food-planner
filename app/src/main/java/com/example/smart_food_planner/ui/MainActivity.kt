@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNav : BottomNavigationView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,27 +29,39 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.selectedItemId = R.id.nav_home
 
-        bottomNav.setOnItemSelectedListener { it->
+        bottomNav.setOnItemSelectedListener { it ->
+
+            bottomNav.menu.findItem(R.id.nav_home).setIcon(R.drawable.ic_bn_home)
+            bottomNav.menu.findItem(R.id.nav_search).setIcon(R.drawable.ic_bn_search)
+            bottomNav.menu.findItem(R.id.nav_calender).setIcon(R.drawable.ic_bn_calendar)
+            bottomNav.menu.findItem(R.id.nav_ai).setIcon(R.drawable.ic_bn_fav)
+
+
             var fragment: Fragment? = null
             when (it.itemId) {
                 R.id.nav_home -> {
+                    it.setIcon(R.drawable.ic_home_selected)
                     fragment = home()
                 }
                 R.id.nav_search -> {
+                    it.setIcon(R.drawable.ic_search_selected)
                     fragment = Search()
                 }
                 R.id.nav_calender -> {
+                    it.setIcon(R.drawable.ic_calender_selected)
                     fragment = Calender()
                 }
                 R.id.nav_ai -> {
+                    it.setIcon(R.drawable.ic_favorite_selected)
                     fragment = AI()
-                    bottomNav.visibility = View.GONE
                 }
             }
+
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, fragment!!)
                 .commit()
+
             return@setOnItemSelectedListener true
         }
 

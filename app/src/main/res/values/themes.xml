@@ -85,5 +85,12 @@
     </style>
 
 
+    <style name="ActiveIndicatorTransparent" parent="">
+        <!-- بعض نسخ المكتبة تتوقع reference لـ materialShapeDrawable أو background -->
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+
 
 </resources>

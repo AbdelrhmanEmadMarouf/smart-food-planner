@@ -146,5 +146,32 @@ class Meal_Repository() {
     }
 
 
+    fun getMealByName(mealName : String? , callback : (List<Detailed_Meal>) -> Unit){
+
+        MealServiceObject.getMealByName(mealName)
+            .enqueue(object : Callback<Detailed_Meals>{
+                override fun onResponse(
+                    request: Call<Detailed_Meals?>,
+                    response: Response<Detailed_Meals?>
+                ) {
+                    if(response.isSuccessful){
+                        val list = response.body()?.detailedMealsList ?: emptyList()
+                        callback(list)
+                   //     callback(response.body()!!.detailedMealsList)
+                    }
+                }
+
+                override fun onFailure(
+                    request: Call<Detailed_Meals?>,
+                    response: Throwable
+                ) {
+                    Log.d("ERROR", "onFailure: ${response.message.toString()}")
+                }
+            })
+
+
+    }
+
+
 }
 

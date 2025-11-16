@@ -75,6 +75,14 @@
     <color name="card_dark_blue">#0F2E3A</color>
 
 
+    <color name="bn_bg">#0E2430</color>
+    <color name="bn_surface">#0F3942</color>
+    <color name="bn_accent">#13C7A6</color>
+    <color name="bn_text">#BFDCE0</color>
+    <color name="bn_text_selected">#FFFFFF</color>
+    <color name="bn_icon_unselected">#9FB8BC</color>
+    <color name="bn_shadow">#0B000000</color>
+    <color name="bn_icon_selected">#1CC8A0</color>
 
 
 
