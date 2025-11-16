@@ -4,28 +4,31 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.smart_food_planner.database.dao.MealDao
+import com.example.smart_food_planner.database.dao.Favorite_Meals_DAO
+import com.example.smart_food_planner.database.dataclasses.FavoriteMeals
 import com.example.smart_food_planner.database.dataclasses.Meal_Data
 
+
 @Database(
-    entities = [Meal_Data::class],
-    version = 2,
+    entities = [FavoriteMeals::class],
+    version = 1,
     exportSchema = false
 )
-abstract class MealTableDatabase : RoomDatabase() {
+abstract class Favorite_Table_Database : RoomDatabase() {
 
-    abstract fun getMealDao(): MealDao
+
+    abstract fun getFavoriteDao() : Favorite_Meals_DAO
 
     companion object {
         @Volatile
-        private var INSTANCE: MealTableDatabase? = null
+        private var INSTANCE: Favorite_Table_Database? = null
 
-        fun getInstance(context: Context): MealTableDatabase {
+        fun getInstance(context: Context): Favorite_Table_Database {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    MealTableDatabase::class.java,
-                    "favorite_meals_database"
+                    Favorite_Table_Database::class.java,
+                    "meal_database"
                 )
                     .fallbackToDestructiveMigration()
                     .build()
@@ -34,4 +37,6 @@ abstract class MealTableDatabase : RoomDatabase() {
             }
         }
     }
+
+
 }

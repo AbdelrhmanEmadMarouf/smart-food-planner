@@ -18,3 +18,14 @@ data class Meal_Data(
 )
 
 
+@Entity(
+    tableName = "Favorite_meals_table"
+)
+data class FavoriteMeals(
+    @PrimaryKey
+    val mealId: String,
+    val strMeal: String,
+    val strMealThumb: String
+)
+
+

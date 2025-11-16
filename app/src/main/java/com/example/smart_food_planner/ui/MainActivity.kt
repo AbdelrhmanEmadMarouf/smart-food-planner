@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_ai -> {
                     it.setIcon(R.drawable.ic_favorite_selected)
-                    fragment = AI()
+                    fragment = Favorite_Fragmnet()
                 }
             }
 

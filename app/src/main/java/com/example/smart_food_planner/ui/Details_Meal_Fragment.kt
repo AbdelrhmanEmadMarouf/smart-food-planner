@@ -1,7 +1,6 @@
 package com.example.smart_food_planner.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,15 +25,12 @@ import com.google.android.material.imageview.ShapeableImageView
 
 import kotlin.getValue
 // imports مهمة
-import android.content.Intent
-import android.net.Uri
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.example.smart_food_planner.database.dataclasses.FavoriteMeals
+import com.example.smart_food_planner.viewmodel.Favorite_Meals_Viewmodel
+
 class Details_Meal_Fragment : Fragment() {
 
 
@@ -62,6 +58,7 @@ class Details_Meal_Fragment : Fragment() {
 
     private val mealViewModel: MealsViewModel by viewModels()
 
+
     private val currentMealIngredientsList = mutableListOf<String>()
     private val currentMealMeasuresList = mutableListOf<String>()
     private var allIngredientsList = listOf<Ingrediant_Item>()
@@ -69,10 +66,13 @@ class Details_Meal_Fragment : Fragment() {
     private var instructionsList = listOf<String>()
 
 
-    private lateinit var webView : WebView
+    private lateinit var webView: WebView
 
     private var currentStep = 1
 
+    private val favoriteMealsViewModel: Favorite_Meals_Viewmodel by this.viewModels()
+
+    private var favoriteMealIds = listOf<FavoriteMeals>()
 
 
     override fun onCreateView(
@@ -105,12 +105,6 @@ class Details_Meal_Fragment : Fragment() {
         askAiButton = view.findViewById(R.id.btn_ask_bot)
 
 
-
-
-
-
-
-
         val layoutAnim =
             AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation_grid)
         ingrediants_recycler_view.layoutAnimation = layoutAnim
@@ -122,6 +116,29 @@ class Details_Meal_Fragment : Fragment() {
 
 
         val MealId = arguments?.getString("Meal Id")
+
+
+
+        favoriteMealsViewModel.favorite_meals.observe(viewLifecycleOwner) { Ids ->
+            favoriteMealIds = Ids
+
+
+            favoriteMealIds.forEach {
+                if (it.mealId == MealId) {
+                    favoriteButtonIsSelected = true
+                    favoriteButton.setBackgroundResource(R.drawable.fav_button_selected)
+                    favoriteButton.text = "Remove From Favorites"
+                }
+            }
+
+
+        }
+
+
+        favoriteMealsViewModel.getFavoriteMeals()
+
+
+
 
 
         mealViewModel.getMealBId(MealId)
@@ -153,11 +170,25 @@ class Details_Meal_Fragment : Fragment() {
                 favoriteButtonIsSelected = false
                 favoriteButton.setBackgroundResource(R.drawable.fav_button_unselected)
                 favoriteButton.text = "♡  Add to Favorites"
+
+                favoriteMealsViewModel.deleteMeal(
+                    FavoriteMeals(
+                        currentMeal.idMeal,
+                        currentMeal.strMeal,
+                        currentMeal.strMealThumb
+                    )
+                )
             } else {
                 favoriteButtonIsSelected = true
                 favoriteButton.setBackgroundResource(R.drawable.fav_button_selected)
-                favoriteButton.text = "♡  Add to Favorites"
                 favoriteButton.text = "Remove From Favorites"
+                favoriteMealsViewModel.addFavoriteMeal(
+                    FavoriteMeals(
+                        currentMeal.idMeal,
+                        currentMeal.strMeal,
+                        currentMeal.strMealThumb
+                    )
+                )
             }
         }
 
@@ -213,10 +244,6 @@ class Details_Meal_Fragment : Fragment() {
             animateFavoriteButton(askAiButton)
 
 
-
-
-
-
             val fragment = AI().apply {
                 arguments = bundleOf("Meal Id" to currentMeal.idMeal)
             }
@@ -230,8 +257,6 @@ class Details_Meal_Fragment : Fragment() {
                     .addToBackStack(null)
                     .commit()
             }
-
-
 
 
         }
@@ -450,11 +475,4 @@ class Details_Meal_Fragment : Fragment() {
     }
 
 
-
-
-
-
-
-
-
-    }
+}
