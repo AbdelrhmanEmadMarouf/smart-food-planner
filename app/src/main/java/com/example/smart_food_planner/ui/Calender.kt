@@ -117,7 +117,7 @@ class Calender : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        backToHome = view.findViewById(R.id.btnBack)
+
         TodaylunchImage = view.findViewById(R.id.ivLunchPlus)
         TodaybreakfastImage = view.findViewById(R.id.ivBreakfastPlus)
         TodayDinnerImage = view.findViewById(R.id.ivDinnerPlus)
@@ -129,7 +129,7 @@ class Calender : Fragment() {
         numberOfMealsInWeekText = view.findViewById(R.id.numberOfMealsInWeek)
         percentOfMealsInWeek = view.findViewById(R.id.percentOfMealsInWeek)
 
-        calendarView = view.findViewById<CalendarView>(R.id.calendarView)
+        calendarView = view.findViewById(R.id.calendarView)
 
         observeAllMeals()
 

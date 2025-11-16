@@ -1,6 +1,7 @@
 package com.example.smart_food_planner.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,9 +28,15 @@ import kotlin.getValue
 // imports مهمة
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.CalendarView
 import androidx.core.os.bundleOf
 import com.example.smart_food_planner.database.dataclasses.FavoriteMeals
+import com.example.smart_food_planner.database.dataclasses.Meal_Data
+import com.example.smart_food_planner.ui.Calender.Meal_Database_ViewmodelFactory
 import com.example.smart_food_planner.viewmodel.Favorite_Meals_Viewmodel
+import com.example.smart_food_planner.viewmodel.Meal_Database_Viewmodel
+import java.util.Calendar
+import kotlin.getValue
 
 class Details_Meal_Fragment : Fragment() {
 
@@ -75,6 +82,38 @@ class Details_Meal_Fragment : Fragment() {
     private var favoriteMealIds = listOf<FavoriteMeals>()
 
 
+    private lateinit var breakFastButton : AppCompatButton
+    private lateinit var launchFastButton : AppCompatButton
+    private lateinit var dinnerFastButton : AppCompatButton
+    private lateinit var addToYourPlan : AppCompatButton
+
+    private var breakfastIsSelected = false
+    private var launchIsSelected = false
+    private var dinnerIsSelected = false
+
+    private lateinit var calendarView: CalendarView
+
+
+
+    val calendar = Calendar.getInstance()
+
+    var today = calendar.get(Calendar.DAY_OF_MONTH)
+    var thisMonth = calendar.get(Calendar.MONTH)+1
+    var thisYear = calendar.get(Calendar.YEAR)
+
+    var calenderDay = today
+    var calenderMonth = thisMonth
+    var calenderyear =  thisYear
+
+    var mealNumber = 1 //breakfast -> 1 , launch -> 2 , dinner ->3
+
+
+
+    private val mealDatabaseViewModel: Meal_Database_Viewmodel by viewModels<Meal_Database_Viewmodel> {
+        Meal_Database_ViewmodelFactory(requireActivity().application)
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -103,6 +142,15 @@ class Details_Meal_Fragment : Fragment() {
         InstructionText = view.findViewById(R.id.tv_step_sub)
         webView = view.findViewById(R.id.webView)
         askAiButton = view.findViewById(R.id.btn_ask_bot)
+        breakFastButton = view.findViewById(R.id.btn_breakfast_tab)
+        launchFastButton = view.findViewById(R.id.btn_lunch_tab)
+        dinnerFastButton = view.findViewById(R.id.btn_dinner_tab)
+        addToYourPlan = view.findViewById(R.id.btn_add_to_plan)
+        calendarView = view.findViewById(R.id.details_calender_view)
+
+
+        breakFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
+        breakfastIsSelected = true
 
 
         val layoutAnim =
@@ -260,6 +308,70 @@ class Details_Meal_Fragment : Fragment() {
 
 
         }
+
+
+
+        breakFastButton.setOnClickListener {
+            animateFavoriteButton(breakFastButton)
+            makeAllButtonsUnSelected()
+            breakFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
+            breakfastIsSelected = true
+
+        }
+
+
+        launchFastButton.setOnClickListener {
+            animateFavoriteButton(launchFastButton)
+            makeAllButtonsUnSelected()
+            launchFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
+            launchIsSelected = true
+
+        }
+
+        dinnerFastButton.setOnClickListener {
+            animateFavoriteButton(dinnerFastButton)
+            makeAllButtonsUnSelected()
+            dinnerFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
+            dinnerIsSelected = true
+
+        }
+
+
+        addToYourPlan.setOnClickListener {
+            animateFavoriteButton(addToYourPlan)
+
+
+            if(breakfastIsSelected) {
+                mealNumber = 1
+            }else if(launchIsSelected){
+                mealNumber = 2
+            }else{
+                mealNumber =3
+            }
+
+            mealDatabaseViewModel.addMeal(Meal_Data(
+                MealId!!.toInt(),
+                calenderDay,
+                calenderMonth,
+                calenderyear,
+                mealNumber
+            ))
+
+
+
+        }
+
+
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+
+            val realMonth = month + 1
+
+            calenderDay = dayOfMonth
+            calenderMonth = realMonth
+            calenderyear = year
+        }
+
 
 
     }
@@ -474,5 +586,15 @@ class Details_Meal_Fragment : Fragment() {
 
     }
 
+    fun makeAllButtonsUnSelected(){
+        breakFastButton.setBackgroundResource(R.drawable.bg_date_selector)
+        launchFastButton.setBackgroundResource(R.drawable.bg_date_selector)
+        dinnerFastButton.setBackgroundResource(R.drawable.bg_date_selector)
+
+        breakfastIsSelected = false
+        launchIsSelected = false
+        dinnerIsSelected = false
+
+    }
 
 }

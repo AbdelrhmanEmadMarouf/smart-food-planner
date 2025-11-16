@@ -377,6 +377,155 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
+
+            <!-- ====== New Section: Add to your plan (single CardView container) ====== -->
+            <TextView
+                android:id="@+id/tv_add_to_plan_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Add to your plan"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calendarCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/card_dark_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <!-- Calendar view -->
+                    <android.widget.CalendarView
+                        android:id="@+id/details_calender_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/CalendarViewTheme"
+                        android:dateTextAppearance="@style/CalendarDateText"
+                        android:weekDayTextAppearance="@style/CalendarWeekDayText"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- small helper under calendar (optional) -->
+                    <TextView
+                        android:id="@+id/tv_calendar_helper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Tap a date to schedule this meal."
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Choose meal time title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose meal time"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- Tabs row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:weightSum="3">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_breakfast_tab"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/bg_date_selector"
+                            android:text="Breakfast"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_lunch_tab"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/bg_date_selector"
+                            android:text="Lunch"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_dinner_tab"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_date_selector"
+                            android:text="Dinner"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <!-- Helper text -->
+                    <TextView
+                        android:id="@+id/tv_add_to_plan_helper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="Select a date and meal time, then add to your plan."
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+
+                    <!-- Add to your plan button -->
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_add_to_plan"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/fav_next_step_button"
+                        android:gravity="center"
+                        android:stateListAnimator="@null"
+                        android:text="Add to your plan"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        app:cornerRadius="28dp"
+                        app:rippleColor="@android:color/transparent" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- ====== End Add to your plan (single CardView) ====== -->
+
+
+
+            <!-- CookBot section (moved to be the last section) -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -461,7 +610,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
 
             <View
                 android:layout_width="match_parent"
