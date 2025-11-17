@@ -19,10 +19,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,7 +48,10 @@ import com.google.android.material.imageview.ShapeableImageView
 import java.util.Calendar
 import kotlin.getValue
 import androidx.lifecycle.lifecycleScope
+import com.example.smart_food_planner.model.dataClasses.Detailed_Meal
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -72,20 +80,21 @@ class Calender : Fragment() {
     val calendar = Calendar.getInstance()
 
     var today = calendar.get(Calendar.DAY_OF_MONTH)
-    var thisMonth = calendar.get(Calendar.MONTH)+1
+    var thisMonth = calendar.get(Calendar.MONTH) + 1
     var thisYear = calendar.get(Calendar.YEAR)
 
     var calenderDay = today
     var calenderMonth = thisMonth
-    var calenderyear =  thisYear
+    var calenderyear = thisYear
 
 
-    private var mealsList: List<Meal> = emptyList()
+    private var mealsList: List<Meal_Data> = emptyList()
+
+    private var detailsMealList = mutableListOf<Detailed_Meal>()
 
     var TodayBreakFastId = -1
     var TodayLaunchId = -1
     var TodayDinnerId = -1
-
 
 
     class Meal_Database_ViewmodelFactory(private val application: Application) :
@@ -97,6 +106,16 @@ class Calender : Fragment() {
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
+    }
+
+
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
     }
 
 
@@ -131,7 +150,8 @@ class Calender : Fragment() {
 
         calendarView = view.findViewById(R.id.calendarView)
 
-        observeAllMeals()
+
+        //   observeAllMeals()
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
 
@@ -145,6 +165,27 @@ class Calender : Fragment() {
 
         val clickAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.add_button_click)
 
+
+        // get all meals from database
+        mealDatabaseViewModel.getAllMealsLive().observe(viewLifecycleOwner) { listOfMeals ->
+            mealsList = listOfMeals
+            allMealsInDatabase = listOfMeals
+            Log.d("TEST", "mealsList size : ${mealsList.size} ")
+
+            detailsMealList.clear()
+
+
+            getAllMealsById()
+
+
+            countMealsThisWeek()
+        }
+
+
+
+
+
+
         goToMealsButton.setOnClickListener {
             checkMealExistOnce(calenderDay, calenderMonth, calenderyear, 1) { id ->
                 val MealIsExist = id != -1
@@ -153,25 +194,13 @@ class Calender : Fragment() {
         }
 
 
-        mealViewModel.getMeals()
-
-        mealViewModel.meals.observe(viewLifecycleOwner) { list ->
-            mealsList = list
-        }
-
-
-
-
-
-
-
         TodaybreakfastImage.setOnClickListener {
             view.startAnimation(clickAnim)
             if (TodayBreakFastId == -1) {
-                showAddEditMealDialog(1, true, today, thisMonth, thisYear)
+                goToSearchScreen()
 
             } else {
-                showEditDeleteDialog(TodayBreakFastId, today, thisMonth, thisYear, 1)
+                goToDetailsScreen(TodayBreakFastId.toString())
             }
 
         }
@@ -180,19 +209,19 @@ class Calender : Fragment() {
 
 
             if (TodayLaunchId == -1) {
-                showAddEditMealDialog(2, true, today, thisMonth, thisYear)
+                goToSearchScreen()
 
             } else {
-                showEditDeleteDialog(TodayLaunchId, today, thisMonth, thisYear, 2)
+                goToDetailsScreen(TodayLaunchId.toString())
             }
 
         }
         TodayDinnerImage.setOnClickListener {
             view.startAnimation(clickAnim)
             if (TodayDinnerId == -1) {
-                showAddEditMealDialog(3, true, today, thisMonth, thisYear)
+                goToSearchScreen()
             } else {
-                showEditDeleteDialog(TodayDinnerId, today, thisMonth, thisYear, 3)
+                goToDetailsScreen(TodayDinnerId.toString())
             }
 
         }
@@ -200,30 +229,7 @@ class Calender : Fragment() {
 
 
 
-        backToHome.setOnClickListener {
-
-
-
-                requireActivity().supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, home())
-                    .commit()
-
-                val mainActivity = activity as MainActivity
-                val bottomNav = mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation)
-                bottomNav.visibility = View.VISIBLE
-                bottomNav.selectedItemId = R.id.nav_home
-
-        }
-
-
-
-
-        checkMealExists(today, thisMonth, thisYear, 1)
-        checkMealExists(today, thisMonth, thisYear, 2)
-        checkMealExists(today, thisMonth, thisYear, 3)
-
-
+        countMealsThisWeek()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -239,57 +245,6 @@ class Calender : Fragment() {
     }
 
 
-
-
-    private fun showAddEditMealDialog(
-        numberOfMeal: Int,
-        isAdd: Boolean,
-        day: Int,
-        month: Int,
-        year: Int
-    ) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_meal, null)
-
-        val rvMeals = dialogView.findViewById<RecyclerView>(R.id.meals_recyclerView)
-
-        rvMeals.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvMeals.setHasFixedSize(true)
-
-
-        val dialog = AlertDialog.Builder(requireContext(), R.style.CustomDialog)
-            .setView(dialogView)
-            .create()
-
-        dialogView.findViewById<ImageButton>(R.id.btn_close).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-
-
-        val width = (350 * resources.displayMetrics.density).toInt()
-        val height = (550 * resources.displayMetrics.density).toInt()
-
-        dialog.window?.setLayout(width, height)
-
-
-
-        rvMeals.adapter = Meal_Adapter(
-            mealsList,
-            mealDatabaseViewModel,
-            numberOfMeal,
-            dialog,
-            isAdd,
-            day,
-            month,
-            year
-        )
-
-
-    }
-
-
     private fun checkMealExists(day: Int, month: Int, year: Int, mealNumber: Int) {
 
         mealDatabaseViewModel.getIdOfMeal(day, month, year, mealNumber)
@@ -297,6 +252,7 @@ class Calender : Fragment() {
                 if (mealId != null && mealId != 0) {
 
                     putSelectedMealInUi(mealId, mealNumber)
+
 
                 } else {
                     if (mealNumber == 1) {
@@ -318,119 +274,51 @@ class Calender : Fragment() {
 
     private fun putSelectedMealInUi(idOfMeal: Int, mealNumber: Int) {
 
-        mealViewModel.meals.observe(viewLifecycleOwner) { mealsList ->
 
-            val selectedMeal = mealsList.find { it.idMeal.toInt() == idOfMeal }
+        detailsMealList.forEach {
 
-            selectedMeal?.let { meal ->
+            if (it.idMeal == idOfMeal.toString()) {
 
                 when (mealNumber) {
                     1 -> { // Breakfast
 
                         Glide.with(this)
-                            .load(meal.strMealUrl)
+                            .load(it.strMealThumb)
                             .into(TodaybreakfastImage)
 
-                        TodaybreakfastText.text = meal.strMealTitle
-                        TodayBreakFastId = meal.idMeal.toInt()
+                        TodaybreakfastText.text = it.strMeal
+                        TodayBreakFastId = it.idMeal.toInt()
 
                     }
 
                     2 -> { // Lunch
                         Glide.with(this)
-                            .load(meal.strMealUrl)
+                            .load(it.strMealThumb)
                             .into(TodaylunchImage)
 
-                        TodaylunchText.text = meal.strMealTitle
-                        TodayLaunchId = meal.idMeal.toInt()
+                        TodaylunchText.text = it.strMeal
+                        TodayLaunchId = it.idMeal.toInt()
                     }
 
                     3 -> { // Dinner
                         Glide.with(this)
-                            .load(meal.strMealUrl)
+                            .load(it.strMealThumb)
                             .into(TodayDinnerImage)
 
-                        TodayDinnerText.text = meal.strMealTitle
-                        TodayDinnerId = meal.idMeal.toInt()
+                        TodayDinnerText.text = it.strMeal
+                        TodayDinnerId = it.idMeal.toInt()
                     }
                 }
+
+
             }
-        }
-    }
 
-
-    private fun showEditDeleteDialog(
-        mealId: Int,
-        day: Int,
-        month: Int,
-        year: Int,
-        mealNumber: Int
-    ) {
-        val dialogView = layoutInflater.inflate(R.layout.edit_or_delet_dialog, null)
-
-        val mealImage = dialogView.findViewById<ShapeableImageView>(R.id.Meal_Image_edit_delete)
-        val mealTitle = dialogView.findViewById<TextView>(R.id.Meal_Title_edit_delete)
-        val mealDesc = dialogView.findViewById<TextView>(R.id.Meal_Description_edit_delete)
-        val editButton = dialogView.findViewById<MaterialButton>(R.id.EditButton)
-        val deleteButton = dialogView.findViewById<MaterialButton>(R.id.DeleteButton)
-
-
-
-
-
-        getMealByIdFromApi(mealId) { meal ->
-            mealTitle.text = meal?.strMealTitle
-            mealDesc.text = meal?.strMealDescription
-            Glide.with(this)
-                .load(meal?.strMealUrl)
-                .into(mealImage)
-        }
-
-
-        val dialog = AlertDialog.Builder(requireContext(), R.style.CustomDialog)
-            .setView(dialogView)
-            .create()
-
-        dialogView.findViewById<ImageButton>(R.id.btn_close_edit_delete).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.window?.setBackgroundDrawableResource(R.drawable.chat_background)
-
-        editButton.setOnClickListener {
-            dialog.dismiss()
-            showAddEditMealDialog(mealNumber, false, today, thisMonth, thisYear)
-        }
-
-
-        deleteButton.setOnClickListener {
-            deleteMealFromDatabasee(mealId, day, month, year, mealNumber)
-            dialog.dismiss()
 
         }
 
-        dialog.show()
-
-        val width = (350 * resources.displayMetrics.density).toInt()
-        val height = (550 * resources.displayMetrics.density).toInt()
-        dialog.window?.setLayout(width, height)
-    }
-
-    private fun getMealByIdFromApi(mealId: Int, onResult: (Meal?) -> Unit) {
-        mealViewModel.meals.observe(viewLifecycleOwner) { mealsList ->
-            val foundMeal = mealsList.find { it.idMeal.toInt() == mealId }
-            onResult(foundMeal)
-        }
 
 
     }
-
-
-    private fun deleteMealFromDatabasee(id: Int, day: Int, month: Int, year: Int, mealNumber: Int) {
-        mealDatabaseViewModel.deleteMeal(Meal_Data(id, day, month, year, mealNumber))
-    }
-
-
 
 
     private fun showGoToMealsDialog(MealIsExist: Boolean, day: Int, month: Int, year: Int) {
@@ -440,8 +328,6 @@ class Calender : Fragment() {
             .create()
 
         dialog.window?.setBackgroundDrawableResource(R.drawable.chat_background)
-
-
 
 
         val MealcardView = dialogView.findViewById<CardView>(R.id.cvMealCard)
@@ -467,7 +353,7 @@ class Calender : Fragment() {
         val mealImage = dialogView.findViewById<ShapeableImageView>(R.id.ivMealImage)
         val mealTitle = dialogView.findViewById<TextView>(R.id.tvMealTitle)
         val mealDescription = dialogView.findViewById<TextView>(R.id.tvMealDescription)
-        val btnEditMeal = dialogView.findViewById<MaterialButton>(R.id.btnEditMeal)
+        val btnDetails = dialogView.findViewById<MaterialButton>(R.id.btnDetails)
         val btnDeleteMeal = dialogView.findViewById<MaterialButton>(R.id.btnDeleteMeal)
         val btnClose = dialogView.findViewById<ImageButton>(R.id.btnCloseMealType)
 
@@ -479,9 +365,6 @@ class Calender : Fragment() {
 
         var numberOfMeal = 1
         val mealButtons = listOf(btnBreakfast, btnLunch, btnDinner)
-
-
-
 
 
         fun updateSelection(selectedButton: MaterialButton) {
@@ -504,29 +387,46 @@ class Calender : Fragment() {
         fun putMealOnCardView(mealId: Int) {
 
 
-            val selectedMeal = mealsList.find { it.idMeal.toInt() == mealId }
+            val selectedMeal = detailsMealList.find { it.idMeal.toInt() == mealId }
 
             selectedMeal?.let { meal ->
-                mealTitle.text = meal.strMealTitle
-                mealDescription.text = meal.strMealDescription
+                mealTitle.text = meal.strMeal
+                mealDescription.text = meal.strMeal   // this is the place of the description
                 Glide.with(dialogView.context)
-                    .load(meal.strMealUrl)
+                    .load(meal.strMealThumb)
                     .into(mealImage)
 
 
 
 
 
-                btnEditMeal.setOnClickListener {
+
+                btnDetails.setOnClickListener {
                     dialog.dismiss()
-                     showAddEditMealDialog(numberOfMeal, false, day, month, year)
-                  //  Log.d("TTTTEST", "$day    $month   $year   ")
+
+
+                    goToDetailsScreen(selectedMeal.idMeal)
+
+
+
+
                 }
+
+
+
 
 
                 btnDeleteMeal.setOnClickListener {
                     dialog.dismiss()
-                     mealDatabaseViewModel.deleteMeal(Meal_Data(meal.idMeal.toInt(), day, month, year, numberOfMeal))
+                    mealDatabaseViewModel.deleteMeal(
+                        Meal_Data(
+                            meal.idMeal.toInt(),
+                            day,
+                            month,
+                            year,
+                            numberOfMeal
+                        )
+                    )
                 }
 
 
@@ -573,7 +473,9 @@ class Calender : Fragment() {
         }
 
         addNewMealButton.setOnClickListener {
-            showAddEditMealDialog(numberOfMeal, true, day, month, year)
+
+
+            goToSearchScreen()
             dialog.dismiss()
         }
 
@@ -612,13 +514,51 @@ class Calender : Fragment() {
     }
 
 
-    private fun observeAllMeals() {
-        mealDatabaseViewModel.getAllMealsLive().observe(viewLifecycleOwner) { meals ->
-            allMealsInDatabase = meals
-            countMealsThisWeek()
+    private fun goToSearchScreen() {
 
+
+        val fragment = Search()
+
+        val activity = requireContext() as? AppCompatActivity
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.container, fragment)
+            ?.addToBackStack(null)
+            ?.commit()
+
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav?.selectedItemId = R.id.nav_search
+
+
+        bottomNav?.menu?.findItem(R.id.nav_calender)?.setIcon(R.drawable.ic_bn_calendar)
+
+    }
+
+
+    private fun getAllMealsById() {
+        lifecycleScope.launch {
+            val uniqueIds = mealsList.map { it.id.toString() }.distinct()
+
+            // شغل كل طلبات الجلب في توازي باستخدام async
+            val deferredList = uniqueIds.map { id ->
+                async(Dispatchers.IO) {
+                    mealViewModel.fetchMealByIdCached(id)  // دالة suspend
+                }
+            }
+
+            // هنا تستنى لحد ما كل الطلبات تخلص
+            val results = deferredList.awaitAll().filterNotNull()
+
+            detailsMealList.clear()
+            detailsMealList.addAll(results)
+
+            // بعدين اعمل اللي عايز تعمله
+            checkMealExists(today, thisMonth, thisYear, 1)
+            checkMealExists(today, thisMonth, thisYear, 2)
+            checkMealExists(today, thisMonth, thisYear, 3)
         }
     }
+
 
 
     fun countMealsThisWeek() {
@@ -681,7 +621,7 @@ class Calender : Fragment() {
                 mealCount++
             }
 
-            numberOfMealsInWeekText.text = mealCount.toString()+"/21"
+            numberOfMealsInWeekText.text = mealCount.toString() + "/21"
             val percent = (mealCount.toDouble() / 21) * 100
             percentOfMealsInWeek.text = String.format("%.1f%%", percent)
         }
@@ -690,5 +630,31 @@ class Calender : Fragment() {
     }
 
 
+    private fun goToDetailsScreen(mealId : String){
+        val fragment = Details_Meal_Fragment()
+
+        val args = bundleOf(
+            "Meal Id" to mealId
+        )
+        fragment.arguments = args
+
+        val activity = requireContext() as? AppCompatActivity
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.container, fragment)
+            ?.addToBackStack(null)
+            ?.commit()
+
+
+        val bottomNav =
+            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+
+
+        bottomNav?.menu?.findItem(R.id.nav_calender)?.setIcon(R.drawable.ic_bn_calendar)
+
+    }
+
 
 }
+

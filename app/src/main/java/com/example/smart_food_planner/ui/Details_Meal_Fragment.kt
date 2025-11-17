@@ -108,10 +108,19 @@ class Details_Meal_Fragment : Fragment() {
     var mealNumber = 1 //breakfast -> 1 , launch -> 2 , dinner ->3
 
 
+    private var breakFastButtonIsDisabled = false
+    private var launchButtonIsDisabled = false
+    private var dinnerButtonIsDisabled = false
+
 
     private val mealDatabaseViewModel: Meal_Database_Viewmodel by viewModels<Meal_Database_Viewmodel> {
         Meal_Database_ViewmodelFactory(requireActivity().application)
     }
+
+    private var allMealsInDataBase = listOf<Meal_Data>()
+
+
+
 
 
     override fun onCreateView(
@@ -149,8 +158,22 @@ class Details_Meal_Fragment : Fragment() {
         calendarView = view.findViewById(R.id.details_calender_view)
 
 
-        breakFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
-        breakfastIsSelected = true
+
+        mealDatabaseViewModel.getAllMealsLive()
+
+
+        // get all meals from database
+        mealDatabaseViewModel.getAllMealsLive().observe(viewLifecycleOwner) { listOfMeals ->
+
+            allMealsInDataBase = listOfMeals
+
+
+            preparePlanButtons()
+
+
+
+
+        }
 
 
         val layoutAnim =
@@ -316,6 +339,13 @@ class Details_Meal_Fragment : Fragment() {
             makeAllButtonsUnSelected()
             breakFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
             breakfastIsSelected = true
+            addToYourPlan.apply {
+                isEnabled = true
+                alpha = 1f
+            }
+
+
+
 
         }
 
@@ -325,6 +355,10 @@ class Details_Meal_Fragment : Fragment() {
             makeAllButtonsUnSelected()
             launchFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
             launchIsSelected = true
+            addToYourPlan.apply {
+                isEnabled = true
+                alpha = 1f
+            }
 
         }
 
@@ -333,6 +367,10 @@ class Details_Meal_Fragment : Fragment() {
             makeAllButtonsUnSelected()
             dinnerFastButton.setBackgroundResource(R.drawable.btn_add_cart_bg)
             dinnerIsSelected = true
+            addToYourPlan.apply {
+                isEnabled = true
+                alpha = 1f
+            }
 
         }
 
@@ -357,6 +395,8 @@ class Details_Meal_Fragment : Fragment() {
                 mealNumber
             ))
 
+            makeAllButtonsUnSelected()
+            preparePlanButtons()
 
 
         }
@@ -370,6 +410,13 @@ class Details_Meal_Fragment : Fragment() {
             calenderDay = dayOfMonth
             calenderMonth = realMonth
             calenderyear = year
+
+
+
+            makeAllButtonsUnSelected()
+
+            preparePlanButtons()
+
         }
 
 
@@ -595,6 +642,102 @@ class Details_Meal_Fragment : Fragment() {
         launchIsSelected = false
         dinnerIsSelected = false
 
+        addToYourPlan.apply {
+            isEnabled = false
+            alpha = 0.5f
+        }
+
     }
+
+
+    private fun setTheMealsButtons(day : Int , month : Int , year : Int , numberOfMeals : Int){
+
+        if(calenderDay==day && calenderMonth == month && calenderyear == year){
+
+
+
+            if(numberOfMeals == 1 ){
+                breakFastButton.apply {
+                    isEnabled = false
+                    alpha = 0.5f
+                }
+
+                breakfastIsSelected = false
+                breakFastButtonIsDisabled = true
+
+            }else if(numberOfMeals == 2 ){
+
+                launchFastButton.apply {
+                    isEnabled = false
+                    alpha = 0.5f
+                }
+
+                launchIsSelected = false
+                launchButtonIsDisabled = true
+
+
+            }else{
+
+                dinnerFastButton.apply {
+                    isEnabled = false
+                    alpha = 0.5f
+                }
+                dinnerIsSelected = false
+                dinnerButtonIsDisabled = true
+
+            }
+
+
+        }
+
+
+    }
+
+
+    private fun preparePlanButtons(){
+
+
+        breakFastButton.apply {
+            isEnabled = true
+            alpha = 1f
+        }
+
+        launchFastButton.apply {
+            isEnabled = true
+            alpha = 1f
+        }
+
+        dinnerFastButton.apply {
+            isEnabled = true
+            alpha = 1f
+        }
+
+
+
+        breakFastButtonIsDisabled = false
+        launchButtonIsDisabled = false
+        dinnerButtonIsDisabled = false
+
+
+
+        allMealsInDataBase.forEach {
+
+            setTheMealsButtons(it.day,it.month,it.year,it.numberOfMeal)
+        }
+
+
+        if(breakFastButtonIsDisabled && launchButtonIsDisabled && dinnerButtonIsDisabled){
+
+            addToYourPlan.apply {
+                isEnabled = false
+                alpha = 0.5f
+            }
+        }
+
+    }
+
+
+
+
 
 }

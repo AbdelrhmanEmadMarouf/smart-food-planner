@@ -1,5 +1,6 @@
 package com.example.smart_food_planner.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +11,12 @@ import com.example.smart_food_planner.model.dataClasses.Detailed_Meal
 import com.example.smart_food_planner.model.dataClasses.Filtered_Meal
 import com.example.smart_food_planner.model.dataClasses.Ingrediant_Item
 import com.example.smart_food_planner.model.dataClasses.Meal
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class MealsViewModel : ViewModel() {
 
@@ -64,8 +70,11 @@ class MealsViewModel : ViewModel() {
     val detailedMeal : LiveData<Detailed_Meal>  get() = _detiaildMeal
 
     fun getMealBId(id: String?){
-        repository.getMealById(id,{listOfDetaildMeals->
-            _detiaildMeal.postValue(listOfDetaildMeals[0])
+        // legacy: keep but avoid calling repeatedly inside loops
+        repository.getMealById(id,{ listOfDetaildMeals ->
+            if (listOfDetaildMeals.isNotEmpty()) {
+                _detiaildMeal.postValue(listOfDetaildMeals[0])
+            }
         })
     }
 
@@ -79,10 +88,54 @@ class MealsViewModel : ViewModel() {
     }
 
 
+    private val mealCache = mutableMapOf<String, Detailed_Meal?>()
 
+    /**
+     * Suspend function that returns Detailed_Meal? for given id.
+     * It wraps the repository callback-based getMealById(...) into a suspend function.
+     */
+    suspend fun fetchMealByIdCached(id: String): Detailed_Meal? {
+        // return cache if present
+        mealCache[id]?.let { return it }
 
+        return try {
+            val result = withContext(Dispatchers.IO) {
+                suspendCancellableCoroutine<Detailed_Meal?> { cont ->
+                    try {
+                        repository.getMealById(id) { listOfDetailedMeals ->
+                            val item = listOfDetailedMeals.firstOrNull()
+                            if (!cont.isCompleted) cont.resume(item)
+                        }
+                    } catch (e: Exception) {
+                        if (!cont.isCompleted) cont.resumeWithException(e)
+                    }
 
+                    // cancellation handler: called if coroutine is cancelled
+                    cont.invokeOnCancellation { cause ->
+                        Log.d("MealsVM", "fetchMealByIdCached cancelled for $id. cause=$cause")
+                        // If repository exposed a Call, you could cancel it here.
+                    }
+                }
+            }
 
+            mealCache[id] = result
+            result
+        } catch (e: Exception) {
+            Log.e("MealsVM", "fetchMealByIdCached error for $id", e)
+            null
+        }
+    }
 
-
+    // optional helper to load into LiveData (use only when needed)
+    fun loadDetailedMealToLiveData(id: String) {
+        viewModelScope.launch {
+            val meal = fetchMealByIdCached(id)
+            meal?.let { _detiaildMeal.postValue(it) }
+        }
+    }
 }
+
+
+
+
+

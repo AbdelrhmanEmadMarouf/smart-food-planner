@@ -195,12 +195,12 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnEditMeal"
+                            android:id="@+id/btnDetails"
                             android:layout_width="0dp"
                             android:layout_height="44dp"
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
-                            android:text="Edit"
+                            android:text="Details"
                             android:textAllCaps="false"
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
