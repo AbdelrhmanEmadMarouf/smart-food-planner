@@ -427,6 +427,8 @@ class Calender : Fragment() {
                             numberOfMeal
                         )
                     )
+
+                    countMealsThisWeek()
                 }
 
 

@@ -420,6 +420,7 @@ class Details_Meal_Fragment : Fragment() {
         }
 
 
+        makeAllButtonsUnSelected()
 
     }
 

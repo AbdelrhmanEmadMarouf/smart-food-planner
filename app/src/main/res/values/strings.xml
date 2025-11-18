@@ -17,8 +17,8 @@
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
     <string name="weekly_progress">Weekly Progress</string>
-    <string name="_12_21_meals_planned">12 / 21 meals planned</string>
-    <string name="_57">57%</string>
+    <string name="_12_21_meals_planned">0 / 21 meals planned</string>
+    <string name="_57">0%</string>
     <string name="back">back</string>
     <string name="manage_your_meals_plan">Manage Your Meals Plan</string>
     <string name="favorite">Favorite</string>

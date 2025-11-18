@@ -38,7 +38,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/beef_image"
                 android:clipToOutline="true"
-                android:background="@drawable/top_rounded_mask" />
+                android:background="@color/white" />
 
 
 
