@@ -146,6 +146,34 @@ class Meal_Repository() {
     }
 
 
+
+
+    fun getRandomMeal( callback: (List<Detailed_Meal>) -> Unit){
+
+
+        MealServiceObject.getRandomMeal()
+            .enqueue(object : Callback<Detailed_Meals>{
+                override fun onResponse(
+                    request: Call<Detailed_Meals?>,
+                    response : Response<Detailed_Meals?>
+                ) {
+                    if(response.isSuccessful){
+                        callback(response.body()!!.detailedMealsList)
+                    }
+                }
+
+                override fun onFailure(
+                    request: Call<Detailed_Meals?>,
+                    throwable: Throwable
+                ) {
+                    Log.d("ERROR", "onFailure: ${throwable.message.toString()}")
+                }
+            })
+
+
+    }
+
+
     fun getMealByName(mealName : String? , callback : (List<Detailed_Meal>) -> Unit){
 
         MealServiceObject.getMealByName(mealName)

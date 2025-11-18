@@ -50,6 +50,12 @@ android {
 
 dependencies {
 
+    //live data for compose
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+    //Async
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     // youtube library
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
 
