@@ -1,41 +1,27 @@
 package com.example.homeui_foodplannerproject.view
-
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,32 +37,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.homeui_foodplannerproject.R
 import com.example.homeui_foodplannerproject.model.CategoryWithMeals
 import com.example.homeui_foodplannerproject.model.Meal
-import com.example.homeui_foodplannerproject.viewmodel.MealUIState
 import com.example.homeui_foodplannerproject.viewmodel.MealViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(mealsViewModel: MealViewModel = viewModel()){
@@ -96,14 +74,14 @@ fun HomeScreen(mealsViewModel: MealViewModel = viewModel()){
         item {
 
 
+                // random meal
+                RandomMeal(randomMeal)
+            }
 
-            // random meal
-            RandomMeal(randomMeal)
 
-
-        }
         item {
             //calenderButton
+
             CalenderButton()
         }
         item {
@@ -143,48 +121,52 @@ fun HomeScreen(mealsViewModel: MealViewModel = viewModel()){
 
 
 @Composable
+@Preview(showSystemUi = true)
 fun CalenderButton(){
     Spacer(Modifier.height(50.dp))
     Text(text = "Set special Days! 🗓️", fontSize = 30.sp,fontWeight = FontWeight.Bold,)
     Spacer(Modifier.height(20.dp))
     Column(modifier = Modifier, horizontalAlignment = Alignment.Start) {
 
-        Card(
-
-            onClick = {/*TODO*/ }, modifier = Modifier.padding(0.dp),
-            elevation = CardDefaults.cardElevation(20.dp)
-        )
-        {
-            Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
-                Column {
-                    Text(
-                        " \nTurn Any Day into \n a Step-by-Step \n Recipe \n",
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        " Cook Anyday You Want!\n",
-                        fontSize = 20.sp,
-                        fontStyle = FontStyle.Italic
-                    )
-                    Row {
-                        Spacer(Modifier.size(10.dp))
+        Box(modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+            ) {
+            Card(
+                onClick = {/*TODO*/ }, modifier = Modifier.padding(0.dp),
+                elevation = CardDefaults.cardElevation(20.dp)
+            )
+            {
+                Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
+                    Column {
                         Text(
-                            "Log Now\n",
+                            " \nTurn Any Day into \n a Step-by-Step \n Recipe \n",
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            " Cook Anyday You Want!\n",
                             fontSize = 20.sp,
-                            textDecoration = TextDecoration.Underline
-                        )}
+                            fontStyle = FontStyle.Italic
+                        )
+                        Row {
+                            Spacer(Modifier.size(10.dp))
+                            Text(
+                                "Log Now\n",
+                                fontSize = 20.sp,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        }
 
+                    }
+                    //Spacer(modifier = Modifier.width(150.dp))
+                    val imageCalender = painterResource(id = R.drawable.untitled_design)
+                    Image(
+                        painter = imageCalender,
+                        contentDescription = "imageCalender",
+                    )
                 }
-                //Spacer(modifier = Modifier.width(150.dp))
-                val imageCalender = painterResource(id = R.drawable.untitled_design)
-                Image(
-                    painter = imageCalender,
-                    contentDescription = "imageCalender",
-                )
             }
         }
-
 
     }
     Spacer(Modifier.height(50.dp))
@@ -376,11 +358,12 @@ fun MealCardForRandom(meal : Meal?) {
 //}
 
 @Composable
-fun RandomMeal(meal: Meal?){
+fun RandomMeal(meal: Meal?, /*isFavorite : Boolean, onToggleFavorite : (String)-> Unit*/){
     Text(text = "Today's Meal! 🥗", fontSize = 40.sp,fontWeight = FontWeight.Bold,)
     Spacer(Modifier.height(20.dp))
     val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
+
 
     var isFavorite by remember { mutableStateOf(false) }
 
@@ -391,7 +374,9 @@ fun RandomMeal(meal: Meal?){
         Color(0xFFdddedc)
 
 
-
+    Box(modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
     Card(
         modifier = Modifier.size(370.dp),
         onClick = {/*TODO*/ },
@@ -460,10 +445,12 @@ fun RandomMeal(meal: Meal?){
                             interactionSource = interactionSource,
                             indication = null,
                             onClick = {
+                         //       onToggleFavorite(meal.idMeal)
                                 isFavorite = !isFavorite
                                 if ( isFavorite )
-                                {  Toast.makeText(context, "Meal added to favorite!", Toast.LENGTH_SHORT).show()}
-
+                                {
+                                    Toast.makeText(context, "Meal added to favorite!", Toast.LENGTH_SHORT).show()
+                                }
 
                             }
                         )
@@ -474,6 +461,7 @@ fun RandomMeal(meal: Meal?){
             }
             }
         }
+    }
 }
 
 

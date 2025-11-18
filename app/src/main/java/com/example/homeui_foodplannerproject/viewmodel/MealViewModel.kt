@@ -29,7 +29,27 @@ class MealViewModel(application: Application) : AndroidViewModel(application) {
 
     private val persistenceRepository = MealRepositoryData(application)
 
+    private val _isFavorite = MutableStateFlow<Set<String>>(emptySet())
 
+    val isFavorite : StateFlow<Set<String>> = _isFavorite
+
+    fun toggleFavorite (mealId: String){
+
+        val currentFavorite = _isFavorite.value.toMutableSet()
+        if(currentFavorite.contains(mealId)){
+            currentFavorite.remove(mealId)
+        }else{
+            currentFavorite.add(mealId)
+        }
+        _isFavorite.value = currentFavorite
+
+    }
+
+
+init {
+    FetchAllData()
+    fetchTodaysMeal()
+}
 
     private fun fetchTodaysMeal() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,7 +85,8 @@ class MealViewModel(application: Application) : AndroidViewModel(application) {
             }
         } catch (e: Exception) {
             Log.e("ViewModel", "Error fetching and saving new meal", e)
-        }    }
+        }
+    }
 
     fun FetchAllData(){
         viewModelScope.launch {

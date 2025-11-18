@@ -9,7 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import androidx.datastore.preferences.core.Preferences
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "todays_meal_prefs")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "today's_meal_prefs")
 class MealRepositoryData (private val context: Context) {
     private object PreferencesKeys{
         val Meal_Id = stringPreferencesKey("today_mealId")
