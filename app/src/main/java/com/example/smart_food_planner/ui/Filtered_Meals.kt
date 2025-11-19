@@ -59,17 +59,37 @@ class Filtered_Meals : Fragment() {
 
        val  fragmentTitle = arguments?.getString("Fragment title")
        val  key = arguments?.getString("key")
+       val  backFragment = arguments?.getString("From Fragment")
 
         titleTextView.text = fragmentTitle+" Meals"
 
         btnBack.setOnClickListener {
-            val fragment = Search()
-            val activity = context as? AppCompatActivity
-            activity?.supportFragmentManager
-                ?.beginTransaction()
-                ?.replace(R.id.container, fragment)
-                ?.addToBackStack(null)
-                ?.commit()
+
+
+
+            if(backFragment == "search"){
+                val fragment = Search()
+
+                val activity = context as? AppCompatActivity
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.container, fragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+
+            }else{
+                val fragment = home()
+
+                val activity = context as? AppCompatActivity
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.container, fragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+            }
+
+
+
         }
 
 

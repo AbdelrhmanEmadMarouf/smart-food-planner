@@ -47,4 +47,12 @@ interface Meals_Service {
     ) : Call<Detailed_Meals>
 
 
+
+    @GET("random.php")
+    fun getRandomMeal() : Call<Detailed_Meals>
+
+
+
+
+
 }

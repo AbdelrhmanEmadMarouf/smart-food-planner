@@ -53,7 +53,8 @@ class Category_Names_Adapter(
 
                 val args = bundleOf(
                     "Fragment title" to meal.strMealTitle,
-                    "key" to "c"
+                    "key" to "c",
+                    "From Fragment" to "search"
                 )
                 fragment.arguments = args
 

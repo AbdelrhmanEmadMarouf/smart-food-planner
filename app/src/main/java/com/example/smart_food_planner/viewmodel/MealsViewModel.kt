@@ -26,7 +26,7 @@ class MealsViewModel : ViewModel() {
 
     fun getMeals() = viewModelScope.launch {
 
-        repository.getMeals(){meals->
+        repository.getMeals() { meals ->
             repository.getMeals { mealList ->
                 _meals.postValue(mealList)
 
@@ -38,7 +38,7 @@ class MealsViewModel : ViewModel() {
     private val _countries = MutableLiveData<List<Country>>()
     val countries: LiveData<List<Country>> get() = _countries
 
-    fun getListOfCountriesName() =viewModelScope.launch {
+    fun getListOfCountriesName() = viewModelScope.launch {
         repository.getListOfCountriesName { countries ->
             _countries.postValue(countries)
         }
@@ -48,41 +48,54 @@ class MealsViewModel : ViewModel() {
     private val _ingrediantsList = MutableLiveData<List<Ingrediant_Item>>()
     val ingrediantsList: LiveData<List<Ingrediant_Item>> get() = _ingrediantsList
 
-    fun getListOfIngrediants() =viewModelScope.launch {
+    fun getListOfIngrediants() = viewModelScope.launch {
         repository.getIngrediants_List { IngrediantsList ->
             _ingrediantsList.postValue(IngrediantsList)
         }
     }
 
 
-
     private val _filteredMeals = MutableLiveData<List<Filtered_Meal>>()
-    val filteredMeals : LiveData<List<Filtered_Meal>> get() = _filteredMeals
+    val filteredMeals: LiveData<List<Filtered_Meal>> get() = _filteredMeals
 
-    fun getFilteredMealsList(key: String?, value: String?) = viewModelScope.launch{
-        repository.getFilteredMealsList(key,value,{ filteredMealsList ->
+    fun getFilteredMealsList(key: String?, value: String?) = viewModelScope.launch {
+        repository.getFilteredMealsList(key, value, { filteredMealsList ->
             _filteredMeals.postValue(filteredMealsList)
         })
     }
 
 
     private val _detiaildMeal = MutableLiveData<Detailed_Meal>()
-    val detailedMeal : LiveData<Detailed_Meal>  get() = _detiaildMeal
+    val detailedMeal: LiveData<Detailed_Meal> get() = _detiaildMeal
 
-    fun getMealBId(id: String?){
+    fun getMealBId(id: String?) {
         // legacy: keep but avoid calling repeatedly inside loops
-        repository.getMealById(id,{ listOfDetaildMeals ->
+        repository.getMealById(id, { listOfDetaildMeals ->
             if (listOfDetaildMeals.isNotEmpty()) {
                 _detiaildMeal.postValue(listOfDetaildMeals[0])
             }
         })
     }
 
-    private val _searchedMeals = MutableLiveData<List<Detailed_Meal>>()
-    val searchedMeals : LiveData<List<Detailed_Meal>> get() = _searchedMeals
 
-    fun getMealByName(mealName : String?){
-        repository.getMealByName(mealName,{list->
+    private val _randomMeal = MutableLiveData<Detailed_Meal>()
+    val randomMeal: LiveData<Detailed_Meal> get() = _randomMeal
+
+    fun getRandomMeal() {
+        // legacy: keep but avoid calling repeatedly inside loops
+        repository.getRandomMeal { listOfDetaildMeals ->
+            if (listOfDetaildMeals.isNotEmpty()) {
+                _randomMeal.postValue(listOfDetaildMeals[0])
+            }
+        }
+    }
+
+
+    private val _searchedMeals = MutableLiveData<List<Detailed_Meal>>()
+    val searchedMeals: LiveData<List<Detailed_Meal>> get() = _searchedMeals
+
+    fun getMealByName(mealName: String?) {
+        repository.getMealByName(mealName, { list ->
             _searchedMeals.postValue(list)
         })
     }
@@ -133,9 +146,90 @@ class MealsViewModel : ViewModel() {
             meal?.let { _detiaildMeal.postValue(it) }
         }
     }
+
+
+    suspend fun fetchRandomMealAsync(): Detailed_Meal? {
+        return try {
+            withContext(Dispatchers.IO) {
+                suspendCancellableCoroutine<Detailed_Meal?> { cont ->
+                    try {
+                        repository.getRandomMeal { listOfDetailedMeals ->
+                            val item = listOfDetailedMeals.firstOrNull()
+                            if (!cont.isCompleted) cont.resume(item)
+                        }
+                    } catch (e: Exception) {
+                        if (!cont.isCompleted) cont.resumeWithException(e)
+                    }
+
+                    cont.invokeOnCancellation { cause ->
+                        Log.d("MealsVM", "fetchRandomMealAsync cancelled. cause=$cause")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MealsVM", "fetchRandomMealAsync error", e)
+            null
+        }
+    }
+
+
+    suspend fun fetchMultipleRandomMeals(count: Int): MutableList<Detailed_Meal> {
+        val meals = mutableListOf<Detailed_Meal>()
+
+        repeat(count) {
+            val meal = fetchRandomMealAsync()
+            meal?.let { meals.add(it) }
+        }
+
+        return meals
+    }
+
+
+
+    // أضف هذه الـ function في MealsViewModel
+
+    suspend fun fetchMealsByCategory(categoryName: String, count: Int): List<Detailed_Meal> {
+        return try {
+            withContext(Dispatchers.IO) {
+                suspendCancellableCoroutine { cont ->
+                    try {
+                        repository.getFilteredMealsList("c", categoryName) { filteredMeals ->
+                            // جلب تفاصيل أول 'count' وجبات
+                            val detailedMeals = mutableListOf<Detailed_Meal>()
+                            val mealsToFetch = filteredMeals.take(count)
+
+                            var fetchedCount = 0
+                            mealsToFetch.forEach { filteredMeal ->
+                                repository.getMealById(filteredMeal.idMeal) { detailedMealsList ->
+                                    detailedMealsList.firstOrNull()?.let { detailedMeals.add(it) }
+                                    fetchedCount++
+
+                                    if (fetchedCount == mealsToFetch.size) {
+                                        if (!cont.isCompleted) cont.resume(detailedMeals)
+                                    }
+                                }
+                            }
+
+                            // في حالة عدم وجود وجبات
+                            if (mealsToFetch.isEmpty() && !cont.isCompleted) {
+                                cont.resume(emptyList())
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (!cont.isCompleted) cont.resumeWithException(e)
+                    }
+
+                    cont.invokeOnCancellation { cause ->
+                        Log.d("MealsVM", "fetchMealsByCategory cancelled for $categoryName. cause=$cause")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MealsVM", "fetchMealsByCategory error for $categoryName", e)
+            emptyList()
+        }
+    }
+
+
 }
-
-
-
-
 
