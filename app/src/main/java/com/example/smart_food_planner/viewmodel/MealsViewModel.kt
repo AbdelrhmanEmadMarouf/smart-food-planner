@@ -185,5 +185,51 @@ class MealsViewModel : ViewModel() {
     }
 
 
+
+    // أضف هذه الـ function في MealsViewModel
+
+    suspend fun fetchMealsByCategory(categoryName: String, count: Int): List<Detailed_Meal> {
+        return try {
+            withContext(Dispatchers.IO) {
+                suspendCancellableCoroutine { cont ->
+                    try {
+                        repository.getFilteredMealsList("c", categoryName) { filteredMeals ->
+                            // جلب تفاصيل أول 'count' وجبات
+                            val detailedMeals = mutableListOf<Detailed_Meal>()
+                            val mealsToFetch = filteredMeals.take(count)
+
+                            var fetchedCount = 0
+                            mealsToFetch.forEach { filteredMeal ->
+                                repository.getMealById(filteredMeal.idMeal) { detailedMealsList ->
+                                    detailedMealsList.firstOrNull()?.let { detailedMeals.add(it) }
+                                    fetchedCount++
+
+                                    if (fetchedCount == mealsToFetch.size) {
+                                        if (!cont.isCompleted) cont.resume(detailedMeals)
+                                    }
+                                }
+                            }
+
+                            // في حالة عدم وجود وجبات
+                            if (mealsToFetch.isEmpty() && !cont.isCompleted) {
+                                cont.resume(emptyList())
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (!cont.isCompleted) cont.resumeWithException(e)
+                    }
+
+                    cont.invokeOnCancellation { cause ->
+                        Log.d("MealsVM", "fetchMealsByCategory cancelled for $categoryName. cause=$cause")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MealsVM", "fetchMealsByCategory error for $categoryName", e)
+            emptyList()
+        }
+    }
+
+
 }
 

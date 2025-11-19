@@ -37,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -64,8 +65,17 @@ import com.example.smart_food_planner.model.dataClasses.Detailed_Meal
 import com.example.smart_food_planner.viewmodel.Favorite_Meals_Viewmodel
 import com.example.smart_food_planner.viewmodel.MealsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 var favoriteButtonIsSelected = false
+
+// Data class for category with meals
+data class CategoryWithMeals(
+    val categoryName: String,
+    val meals: List<Detailed_Meal>
+)
 
 class home : Fragment() {
 
@@ -97,7 +107,7 @@ class home : Fragment() {
         strIngredient8 = "",
         strIngredient9 = "",
         strInstructions = "Prepare the Fire: Start a wood fire in your grill and let it burn down to coals.\r\nSeason the Meat: Generously salt the beef cuts.\r\nGrill the Meat: Place the beef on the grill, starting with the thickest cuts farthest from the coals. Add chorizo and morcilla after the beef has been cooking for a while.\r\nCook to Perfection: Cook the meat, turning occasionally, until it reaches your desired doneness. Typically, ribs may take up to 2 hours; thinner cuts will cook faster.\r\nRest and Serve: Let the meat rest for about 10 minutes before slicing. Serve with chimichurri sauce and grilled vegetables.\r\nPro Tips:\r\n\r\nUse a mix of wood and charcoal for a consistent heat source. Wood adds flavor, while charcoal maintains temperature.\r\nSeason the meat just before grilling to ensure it retains its moisture and flavor.\r\nServing Suggestions:\r\n\r\nServe with a side of chimichurri sauce, a fresh tomato salad, and crusty bread. Pair with a robust Malbec wine to complement the rich flavors of the meat.",
-        strMeal = "Asadoooooo",
+        strMeal = "Asado",
         strMealAlternate = "",
         strMealThumb = "https://www.themealdb.com/images/media/meals/kgfh3q1763075438.jpg",
         strMeasure1 = "2kg",
@@ -155,15 +165,44 @@ class home : Fragment() {
         composeView.setContent {
             var forYouMealsList by remember { mutableStateOf<List<Detailed_Meal>>(emptyList()) }
             var randomMealState by remember { mutableStateOf<Detailed_Meal?>(null) }
+            var categoriesWithMeals by remember { mutableStateOf<List<CategoryWithMeals>>(emptyList()) }
             var isLoading by remember { mutableStateOf(true) }
+
+            // observe meals (categories) from ViewModel
+            val mealsState by mealViewModel.meals.observeAsState(emptyList())
 
             LaunchedEffect(Unit) {
                 isLoading = true
-                forYouMealsList = mealViewModel.fetchMultipleRandomMeals(16)
 
-                randomMealState = forYouMealsList.firstOrNull() ?: randomMeal
-                isLoading = false
-                Log.d("TEST", "Loaded meals: ${forYouMealsList.size}")
+                // جلب 16 وجبة عشوائية للـ For You section
+                forYouMealsList = mealViewModel.fetchMultipleRandomMeals(16)
+                randomMealState = forYouMealsList.lastOrNull() ?: randomMeal
+
+                // جلب كل الـ Categories من الـ API
+                mealViewModel.getMeals()
+            }
+
+            // عند استلام الـ categories، نجلب 4 وجبات لكل category
+            LaunchedEffect(mealsState) {
+                if (mealsState.isNotEmpty() && categoriesWithMeals.isEmpty()) {
+
+                    // جلب 4 وجبات لكل category بشكل متوازي
+                    val categoriesData = coroutineScope {
+                        mealsState.map { category ->
+                            async {
+                                val categoryName = category.strMealTitle
+                                val meals = mealViewModel.fetchMealsByCategory(categoryName, 4)
+                                CategoryWithMeals(categoryName, meals)
+                            }
+                        }.awaitAll()
+                    }
+
+                    // تصفية الـ categories التي تحتوي على وجبات فقط
+                    categoriesWithMeals = categoriesData.filter { it.meals.isNotEmpty() }
+
+                    isLoading = false
+                    Log.d("TEST", "Loaded ${categoriesWithMeals.size} categories with meals")
+                }
             }
 
             if (isLoading) {
@@ -177,14 +216,20 @@ class home : Fragment() {
                 // عرض الشاشة بعد انتهاء التحميل
                 HomeScreen(
                     randomMeal = randomMealState ?: randomMeal,
-                    forYouMeals = forYouMealsList
+                    forYouMeals = forYouMealsList,
+                    categoriesWithMeals = categoriesWithMeals
                 )
             }
         }
     }
 
+
     @Composable
-    fun HomeScreen(randomMeal: Detailed_Meal, forYouMeals: List<Detailed_Meal>) {
+    fun HomeScreen(
+        randomMeal: Detailed_Meal,
+        forYouMeals: List<Detailed_Meal>,
+        categoriesWithMeals: List<CategoryWithMeals>
+    ) {
 
         LazyColumn(
             modifier = Modifier
@@ -207,97 +252,69 @@ class home : Fragment() {
                     ForYouSection(forYouMeals)
                 }
             }
+
+            item {
+                Spacer(modifier = Modifier.size(20.dp))
+                Text("More Meals🍴", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+
+            // عرض الـ categories مع الوجبات
+            if (categoriesWithMeals.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 50.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            } else {
+                items(categoriesWithMeals) { categoryData ->
+                    CategorySection(categoryData)
+                }
+            }
         }
-
-//                        LazyColumn (modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(horizontal = 10.dp)){
-//                            item {
-//
-//
-//                                // random meal
-//                                RandomMeal(randomMeal)
-//                            }
-//
-//
-//                            item {
-//                                //calenderButton
-//
-//                                CalenderButton()
-//                            }
-//                            item {
-//                                ForYouSection(randomCategory)
-//                            }
-//
-//                            item {
-//                                Spacer(modifier = Modifier.size(20.dp))
-//                                Text("More Meals🍴", fontSize = 30.sp,fontWeight = FontWeight.Bold,)
-//                                Spacer(modifier = Modifier.size(10.dp))
-//
-//                            }
-//
-//                            if (categoriesWithMeals.isEmpty() && randomMeal != null ){
-//                                item {
-//
-//                                    Box(
-//                                        modifier = Modifier
-//                                            .fillMaxSize()
-//                                            .padding(vertical = 50.dp),
-//                                        contentAlignment = Alignment.Center
-//                                    ) {
-//                                        CircularProgressIndicator()
-//                                    }
-//                                }
-//                            }else{
-//
-//                                items(categoriesWithMeals){
-//                                        CategoryData->
-//
-//                                    CategorySection(CategoryData)
-//                                }
-//                            }
-//                        }
-//                    }
+    }
 
 
-//            @Composable
-//            fun CategorySection(categoryWithMeals: CategoryWithMeals){
-//
-//                Column(modifier = Modifier.padding(vertical = 12.dp)){
-//
-//                    Row (verticalAlignment = Alignment.CenterVertically) {
-//
-//                        Text(text = categoryWithMeals.categoryName, fontSize = 30.sp)
-//                        Row (modifier = Modifier.fillMaxWidth(),
-//                            horizontalArrangement = Arrangement.End
-//                        ){
-//                            Icon(
-//                                contentDescription = "more",
-//                                imageVector = Icons.Default.KeyboardArrowRight,
-//                                tint = Color.Black,
-//                                modifier = Modifier.size(35.dp).clickable(
-//                                    interactionSource = remember { MutableInteractionSource() }, // its obvuose "the source of interactions"
-//                                    indication = null,  // the interactoin of animation when clicked i guess
-//                                    onClick = { Log.i("TAG", "HomeScreen: ") }
-//
-//                                ),
-//                            )
-//                            Spacer(Modifier.size(20.dp))
-//                        }
-//                    }
-//                    LazyRow{
-//                        items(categoryWithMeals.meals) { meal ->
-//                            MealCard(meal = meal)
-//                        }
-//                    }
-//                }
-//
-//            }
+    @Composable
+    fun CategorySection(categoryWithMeals: CategoryWithMeals) {
 
+        Column(modifier = Modifier.padding(vertical = 12.dp)) {
 
+            Row(verticalAlignment = Alignment.CenterVertically) {
 
-
-
+                Text(text = categoryWithMeals.categoryName, fontSize = 30.sp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Icon(
+                        contentDescription = "more",
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        tint = Color.Black,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    goToFilteredMeals(categoryWithMeals.categoryName)
+                                }
+                            ),
+                    )
+                    Spacer(Modifier.size(20.dp))
+                }
+            }
+            LazyRow {
+                items(categoryWithMeals.meals) { meal ->
+                    MealCard(meal = meal)
+                }
+            }
+        }
 
     }
 
@@ -365,7 +382,7 @@ class home : Fragment() {
     fun MealCard(meal: Detailed_Meal) {
         Card(
 
-            onClick = {/*TODO*/ },
+            onClick = { goToDetailsMeal(meal.idMeal) },
             modifier = Modifier
                 .size(200.dp)
                 .padding(6.4.dp)
@@ -426,15 +443,11 @@ class home : Fragment() {
         val context = LocalContext.current
         val interactionSource = remember { MutableInteractionSource() }
 
-        // تحديد حالة الـ favorite من الـ ViewModel
-        var isFavorite by remember { mutableStateOf(false) }
+        // تحديد حالة الـ favorite من الـ ViewModel - استخدام observeAsState بدلاً من observeForever
+        val favoriteMealsList by favoriteMealsViewModel.favorite_meals.observeAsState(emptyList())
 
-        // التحقق من حالة الـ favorite عند التحميل
-        LaunchedEffect(meal.idMeal) {
-            favoriteMealsViewModel.favorite_meals.observeForever { favoriteMeals ->
-                isFavorite = favoriteMeals.any { it.mealId == meal.idMeal }
-            }
-        }
+        // التحقق من حالة الـ favorite بناءً على الـ list
+        val isFavorite = favoriteMealsList.any { it.mealId == meal.idMeal }
 
         val iconColor = if (isFavorite) {
             Color(0xFFFF0000)
@@ -516,25 +529,7 @@ class home : Fragment() {
                                         interactionSource = interactionSource,
                                         indication = null,
                                         onClick = {
-                                            isFavorite = !isFavorite
-
                                             if (isFavorite) {
-                                                // إضافة للمفضلة
-                                                favoriteMealsViewModel.addFavoriteMeal(
-                                                    FavoriteMeals(
-                                                        meal.idMeal,
-                                                        meal.strMeal,
-                                                        meal.strMealThumb
-                                                    )
-                                                )
-                                                Toast
-                                                    .makeText(
-                                                        context,
-                                                        "Meal added to favorite!",
-                                                        Toast.LENGTH_SHORT
-                                                    )
-                                                    .show()
-                                            } else {
                                                 // حذف من المفضلة
                                                 favoriteMealsViewModel.deleteMeal(
                                                     FavoriteMeals(
@@ -547,6 +542,22 @@ class home : Fragment() {
                                                     .makeText(
                                                         context,
                                                         "Meal removed from favorite!",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+                                            } else {
+                                                // إضافة للمفضلة
+                                                favoriteMealsViewModel.addFavoriteMeal(
+                                                    FavoriteMeals(
+                                                        meal.idMeal,
+                                                        meal.strMeal,
+                                                        meal.strMealThumb
+                                                    )
+                                                )
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Meal added to favorite!",
                                                         Toast.LENGTH_SHORT
                                                     )
                                                     .show()
@@ -577,7 +588,7 @@ class home : Fragment() {
                 contentAlignment = Alignment.Center
             ) {
                 Card(
-                    onClick = { goToCalenderFragment() }, // تم التعديل هنا - إضافة الانتقال للـ Calendar
+                    onClick = { goToCalenderFragment() },
                     modifier = Modifier.padding(0.dp),
                     elevation = CardDefaults.cardElevation(20.dp)
                 )
@@ -600,7 +611,7 @@ class home : Fragment() {
                                     "Log Now\n",
                                     fontSize = 20.sp,
                                     textDecoration = TextDecoration.Underline,
-                                    modifier = Modifier.clickable( // تم التعديل هنا - إضافة clickable للنص
+                                    modifier = Modifier.clickable(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null,
                                         onClick = { goToCalenderFragment() }
@@ -666,7 +677,27 @@ class home : Fragment() {
             ?.commit()
     }
 
+    fun goToFilteredMeals(categoryName: String) {
+        val fragment = Filtered_Meals()
+
+        val args = bundleOf(
+            "Fragment title" to categoryName,
+            "key" to "c"
+        )
+        fragment.arguments = args
+
+        val activity = context as? AppCompatActivity
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.container, fragment)
+            ?.addToBackStack(null)
+            ?.commit()
+    }
+
     fun prepareFavoriteButton() {
+        // جلب البيانات من الـ database
+        favoriteMealsViewModel.getFavoriteMeals()
+
         favoriteMealsViewModel.favorite_meals.observe(viewLifecycleOwner) { Ids ->
             favoriteMealIds = Ids
 
