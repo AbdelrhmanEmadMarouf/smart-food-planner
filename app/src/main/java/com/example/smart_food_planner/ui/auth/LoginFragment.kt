@@ -67,9 +67,12 @@ class LoginFragment : Fragment() {
                 .commit()
         }
 
-        // Create account placeholder
+        // Navigate to Register page
         createAccountText.setOnClickListener {
-            Toast.makeText(context, "Create account feature not implemented yet", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, RegisterFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         return view
