@@ -197,7 +197,7 @@ class home : Fragment() {
                         }.awaitAll()
                     }
 
-                    // تصفية الـ categories التي تحتوي على وجبات فقط
+
                     categoriesWithMeals = categoriesData.filter { it.meals.isNotEmpty() }
 
                     isLoading = false
