@@ -4,57 +4,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient_dark"
+    android:fillViewport="true"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="32dp"
-    android:paddingBottom="24dp">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
+    <!-- Outer container fills the viewport so spacer can push the bottom items -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="8dp">
+        android:gravity="center_horizontal">
 
-        <!-- circular avatar with subtle border -->
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/avatar_placeholder"
-            android:scaleType="centerCrop"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/circle_avatar_bg"
-            android:padding="6dp"
-            android:contentDescription="Chef image" />
-
-        <!-- Title -->
-        <TextView
-            android:id="@+id/welcome_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome Back"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#EAF5F6"
-            android:layout_marginBottom="6dp"/>
-
-        <TextView
-            android:id="@+id/welcome_sub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign in to continue your culinary journey"
-            android:textSize="12.5sp"
-            android:textColor="#9FC3C5"
-            android:layout_marginBottom="20dp"/>
-
-        <!-- Email (keeps id) -->
+        <!-- Header area -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="12dp">
+            android:gravity="center_horizontal"
+            android:layout_marginTop="60dp">
 
+            <!-- أكبر الصورة شويه -->
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/avatar_placeholder"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/circle_avatar_bg"
+                android:padding="6dp"
+                android:contentDescription="Chef image" />
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/welcome_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome Back"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#EAF5F6"
+                android:layout_marginBottom="6dp"/>
+
+            <TextView
+                android:id="@+id/welcome_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign in to continue your culinary journey"
+                android:textSize="13sp"
+                android:textColor="#9FC3C5"
+                android:layout_marginBottom="18dp"/>
+        </LinearLayout>
+
+        <!-- Inputs and login button block -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
+
+            <!-- Email label + field -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,27 +73,25 @@
                 android:textColor="#9FC3C5"
                 android:textSize="12sp"
                 android:layout_marginBottom="6dp"/>
+
             <EditText
                 android:id="@+id/email_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:hint="Enter your email"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:background="@drawable/edit_text_border"
                 android:textColor="#EAF5F6"
                 android:textColorHint="#83BCC0"
                 android:inputType="textEmailAddress"
-                android:singleLine="true"/>
-        </LinearLayout>
+                android:singleLine="true"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="12dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"/>
 
-        <!-- Password (keeps id) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="6dp">
-
+            <!-- Password label + field -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,95 +99,72 @@
                 android:textColor="#9FC3C5"
                 android:textSize="12sp"
                 android:layout_marginBottom="6dp"/>
+
             <EditText
                 android:id="@+id/password_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:hint="Enter your password"
-                android:paddingLeft="14dp"
-                android:paddingRight="44dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:background="@drawable/edit_text_border"
                 android:textColor="#EAF5F6"
                 android:textColorHint="#83BCC0"
                 android:inputType="textPassword"
                 android:singleLine="true"
-                android:drawablePadding="8dp"/>
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="12dp"
+                android:layout_marginBottom="22dp"
+                android:gravity="center_vertical"/>
+
+            <!-- Login button (لامع كما طلبت) -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:text="Login"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button_purple_gloss"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"/>
         </LinearLayout>
 
-
-        <!-- Login button (keeps id) -->
-        <Button
-            android:id="@+id/login_button"
+        <!-- spacer: يضمن أن آخر عناصر الشاشة تكون عند الأسفل بدون مكان فاضي تحت -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Login"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_purple"
-            android:textStyle="bold"
-            android:layout_marginBottom="18dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <!-- OR divider -->
+        <!-- bottom texts (Create account + Guest) - ستكون عند أسفل الشاشة -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="18dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="6dp">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="#264C4C"/>
             <TextView
+                android:id="@+id/create_account_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="  OR Continue With  "
-                android:textColor="#9FC3C5"
-                android:textSize="12sp"/>
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="#264C4C"/>
+                android:text="Don't have an account? Create one"
+                android:textColor="#81D8D0"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"/>
+
+            <TextView
+                android:id="@+id/guest_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Continue as Guest"
+                android:textColor="#3FD2C6"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
         </LinearLayout>
-
-        <!-- Google button (keeps id) -->
-        <Button
-            android:id="@+id/google_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Continue with Google"
-            android:textAllCaps="false"
-            android:background="@drawable/google_button_bg"
-            android:drawableStart="@drawable/ic_google"
-            android:drawablePadding="12dp"
-            android:paddingLeft="12dp"
-            android:textColor="#1A1A1A"
-            android:layout_marginBottom="20dp"/>
-
-        <!-- Create account (keeps id) -->
-        <TextView
-            android:id="@+id/create_account_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Don't have an account? Create one"
-            android:textColor="#81D8D0"
-            android:textSize="14sp"
-            android:layout_marginTop="6dp"/>
-
-        <!-- Continue as guest (keeps id) -->
-        <TextView
-            android:id="@+id/guest_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Continue as Guest"
-            android:textColor="#3FD2C6"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="18dp"/>
 
     </LinearLayout>
 </ScrollView>

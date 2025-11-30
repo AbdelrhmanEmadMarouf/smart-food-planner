@@ -22,7 +22,6 @@ class LoginFragment : Fragment() {
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
-    private lateinit var googleButton: Button
     private lateinit var guestText: TextView
     private lateinit var createAccountText: TextView
 
@@ -41,7 +40,6 @@ class LoginFragment : Fragment() {
         emailEditText = view.findViewById(R.id.email_edittext)
         passwordEditText = view.findViewById(R.id.password_edittext)
         loginButton = view.findViewById(R.id.login_button)
-        googleButton = view.findViewById(R.id.google_button)
         guestText = view.findViewById(R.id.guest_text)
         createAccountText = view.findViewById(R.id.create_account_text)
 
@@ -57,10 +55,7 @@ class LoginFragment : Fragment() {
             }
         }
 
-        // Google login placeholder
-        googleButton.setOnClickListener {
-            Toast.makeText(context, "Google Sign-In not implemented yet", Toast.LENGTH_SHORT).show()
-        }
+
 
         // Continue as Guest
         guestText.setOnClickListener {

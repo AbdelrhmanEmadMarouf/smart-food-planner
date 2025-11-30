@@ -1,6 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
-    <size android:width="120dp" android:height="120dp"/>
-    <solid android:color="#F7F7F7"/> <!-- inner background (circle) -->
-    <stroke android:width="6dp" android:color="#F0E07A"/> <!-- pale ring like design in image -->
-    <padding android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp"/>
+    <size android:width="140dp" android:height="140dp"/>
+    <solid android:color="#FFF5B3"/> <!-- yellow inner circle like design -->
+    <stroke android:width="6dp" android:color="#F0E07A"/> <!-- outer ring -->
 </shape>
