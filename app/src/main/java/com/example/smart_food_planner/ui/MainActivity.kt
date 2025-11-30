@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.smart_food_planner.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var bottomNav : BottomNavigationView
-
+    private lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,50 +20,68 @@ class MainActivity : AppCompatActivity() {
         bottomNav = findViewById(R.id.bottom_navigation)
         bottomNav.itemIconTintList = null
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, home())
-            .commit()
+        if (supportFragmentManager.findFragmentByTag("home") == null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container, home(), "home")
+                .commit()
+        }
 
         bottomNav.selectedItemId = R.id.nav_home
 
-        bottomNav.setOnItemSelectedListener { it ->
+        bottomNav.setOnItemSelectedListener { item ->
 
             bottomNav.menu.findItem(R.id.nav_home).setIcon(R.drawable.ic_bn_home)
             bottomNav.menu.findItem(R.id.nav_search).setIcon(R.drawable.ic_bn_search)
             bottomNav.menu.findItem(R.id.nav_calender).setIcon(R.drawable.ic_bn_calendar)
             bottomNav.menu.findItem(R.id.nav_ai).setIcon(R.drawable.ic_bn_fav)
 
+            val transaction = supportFragmentManager.beginTransaction()
 
-            var fragment: Fragment? = null
-            when (it.itemId) {
+            supportFragmentManager.fragments.forEach { transaction.hide(it) }
+
+            val tag = when (item.itemId) {
                 R.id.nav_home -> {
-                    it.setIcon(R.drawable.ic_home_selected)
-                    fragment = home()
+                    item.setIcon(R.drawable.ic_home_selected)
+                    "home"
                 }
+
                 R.id.nav_search -> {
-                    it.setIcon(R.drawable.ic_search_selected)
-                    fragment = Search()
+                    item.setIcon(R.drawable.ic_search_selected)
+                    "search"
                 }
+
                 R.id.nav_calender -> {
-                    it.setIcon(R.drawable.ic_calender_selected)
-                    fragment = Calender()
+                    item.setIcon(R.drawable.ic_calender_selected)
+                    "calendar"
                 }
+
                 R.id.nav_ai -> {
-                    it.setIcon(R.drawable.ic_favorite_selected)
-                    fragment = Favorite_Fragmnet()
+                    item.setIcon(R.drawable.ic_favorite_selected)
+                    "favorite"
                 }
+
+                else -> "home"
             }
 
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, fragment!!)
-                .commit()
+            var fragment = supportFragmentManager.findFragmentByTag(tag)
 
-            return@setOnItemSelectedListener true
+            if (fragment == null) {
+                fragment = when (tag) {
+                    "home" -> home()
+                    "search" -> Search()
+                    "calendar" -> Calender()
+                    "favorite" -> Favorite_Fragmnet()
+                    else -> home()
+                }
+                transaction.add(R.id.container, fragment, tag)
+            } else {
+                transaction.show(fragment)
+            }
+
+            transaction.commitAllowingStateLoss()
+
+            true
         }
-
-
-
     }
 
     @Suppress("DEPRECATION")
@@ -87,7 +102,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     fun setBottomNavVisible(visible: Boolean) {
         if (visible && bottomNav.visibility != View.VISIBLE) {
             bottomNav.animate().alpha(1f).setDuration(180).withStartAction {
@@ -99,8 +113,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
-
 }

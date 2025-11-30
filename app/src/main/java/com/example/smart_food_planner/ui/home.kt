@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,6 +61,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import coil.compose.AsyncImage
 import com.example.smart_food_planner.R
+import com.example.smart_food_planner.database.DailyMealStorage
 import com.example.smart_food_planner.database.dataclasses.FavoriteMeals
 import com.example.smart_food_planner.model.dataClasses.Detailed_Meal
 import com.example.smart_food_planner.viewmodel.Favorite_Meals_Viewmodel
@@ -159,8 +161,9 @@ class home : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val composeView = view.findViewById<ComposeView>(R.id.home_compose_view)
 
-        // تحضير الـ favorite button
+
         prepareFavoriteButton()
+
 
         composeView.setContent {
             var forYouMealsList by remember { mutableStateOf<List<Detailed_Meal>>(emptyList()) }
@@ -172,26 +175,60 @@ class home : Fragment() {
             val mealsState by mealViewModel.meals.observeAsState(emptyList())
 
             LaunchedEffect(Unit) {
-                isLoading = true
+                val context = requireContext()
+                val now = System.currentTimeMillis()
+                val twentyFourHoursMillis = 24 * 60 * 60 * 1000
 
-                // جلب 16 وجبة عشوائية للـ For You section
-                forYouMealsList = mealViewModel.fetchMultipleRandomMeals(16)
-                randomMealState = forYouMealsList.lastOrNull() ?: randomMeal
+                // 🔹 الوجبة اليومية
+                val lastSavedMeal = DailyMealStorage.getSavedMeal(context)
+                val lastTimestamp = DailyMealStorage.getSavedTimestamp(context)
 
-                // جلب كل الـ Categories من الـ API
+                if (lastSavedMeal == null || now - lastTimestamp >= twentyFourHoursMillis) {
+                    val newMeal = mealViewModel.fetchRandomMealAsync()
+                    if (newMeal != null) {
+                        DailyMealStorage.saveMeal(context, newMeal)
+                        randomMealState = newMeal
+                        Log.d("DailyMeal", "updated from internet")
+                    } else {
+                        randomMealState = lastSavedMeal ?: randomMeal
+                        Log.e("DailyMeal", "failed to fetch from internet, using old")
+                    }
+                } else {
+                    randomMealState = lastSavedMeal
+                    Log.d("DailyMeal", "use old mesl")
+                }
+
+                // For You
+                val lastForYouMeals = DailyMealStorage.getSavedForYouMeals(context)
+                val lastForYouTime = DailyMealStorage.getForYouTimestamp(context)
+
+                if (lastForYouMeals == null || now - lastForYouTime >= twentyFourHoursMillis) {
+                    val newList = mealViewModel.fetchMultipleRandomMeals(16)
+                    if (newList.isNotEmpty()) {
+                        DailyMealStorage.saveForYouMeals(context, newList)
+                        forYouMealsList = newList
+                        Log.d("ForYouMeals", "updated for you from internet")
+                    } else {
+                        forYouMealsList = lastForYouMeals ?: emptyList()
+                        Log.e("ForYouMeals", "faild updated for you from internet")
+                    }
+                } else {
+                    forYouMealsList = lastForYouMeals
+                    Log.d("ForYouMeals", "use old for you meal")
+                }
+
+
                 mealViewModel.getMeals()
             }
 
-            // عند استلام الـ categories، نجلب 4 وجبات لكل category
             LaunchedEffect(mealsState) {
                 if (mealsState.isNotEmpty() && categoriesWithMeals.isEmpty()) {
 
-                    // جلب 4 وجبات لكل category بشكل متوازي
                     val categoriesData = coroutineScope {
                         mealsState.map { category ->
                             async {
                                 val categoryName = category.strMealTitle
-                                val meals = mealViewModel.fetchMealsByCategory(categoryName, 4)
+                                val meals = mealViewModel.fetchMealsByCategory(categoryName, 7)
                                 CategoryWithMeals(categoryName, meals)
                             }
                         }.awaitAll()
@@ -213,7 +250,6 @@ class home : Fragment() {
                     CircularProgressIndicator()
                 }
             } else {
-                // عرض الشاشة بعد انتهاء التحميل
                 HomeScreen(
                     randomMeal = randomMealState ?: randomMeal,
                     forYouMeals = forYouMealsList,
@@ -231,11 +267,15 @@ class home : Fragment() {
         categoriesWithMeals: List<CategoryWithMeals>
     ) {
 
+
         LazyColumn(
-            modifier = Modifier
+            modifier = Modifier.background(Color(0xFF0C1A2A ))
                 .fillMaxSize()
                 .padding(horizontal = 10.dp)
         ) {
+            item {
+                Spacer(Modifier.size(30.dp))
+            }
             item {
                 // random meal
                 RandomMeal(randomMeal)
@@ -255,7 +295,8 @@ class home : Fragment() {
 
             item {
                 Spacer(modifier = Modifier.size(20.dp))
-                Text("More Meals🍴", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                Text("More Meals🍴", fontSize = 30.sp, fontWeight = FontWeight.Bold,
+                    color = Color.White)
                 Spacer(modifier = Modifier.size(10.dp))
             }
 
@@ -287,7 +328,8 @@ class home : Fragment() {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
 
-                Text(text = categoryWithMeals.categoryName, fontSize = 30.sp)
+                Text(text = categoryWithMeals.categoryName, fontSize = 30.sp,
+                    color = Color.White)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -295,7 +337,7 @@ class home : Fragment() {
                     Icon(
                         contentDescription = "more",
                         imageVector = Icons.Default.KeyboardArrowRight,
-                        tint = Color.Black,
+                        tint = Color.White,
                         modifier = Modifier
                             .size(35.dp)
                             .clickable(
@@ -328,10 +370,13 @@ class home : Fragment() {
                 .size(300.dp)
                 .padding(9.6.dp)
                 .padding(12.dp),
-            elevation = CardDefaults.cardElevation(8.dp),
+            elevation = CardDefaults.cardElevation(8.dp),border = BorderStroke(
+                width = 2.dp,
+                color = Color(0xFF1abc9c)
+            )
 
 
-            ) {
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -388,9 +433,11 @@ class home : Fragment() {
                 .padding(6.4.dp)
                 .padding(8.dp),
             elevation = CardDefaults.cardElevation(8.dp),
-
-
-            ) {
+            border = BorderStroke(
+                width = 2.dp,
+                color = Color(0xFF1abc9c)
+            )
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -438,15 +485,14 @@ class home : Fragment() {
 
     @Composable
     fun RandomMeal(meal: Detailed_Meal) {
-        Text(text = "Today's Meal! 🥗", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Today's Meal! 🥗", fontSize = 40.sp, fontWeight = FontWeight.Bold,
+            color = Color.White)
         Spacer(Modifier.height(20.dp))
         val context = LocalContext.current
         val interactionSource = remember { MutableInteractionSource() }
 
-        // تحديد حالة الـ favorite من الـ ViewModel - استخدام observeAsState بدلاً من observeForever
         val favoriteMealsList by favoriteMealsViewModel.favorite_meals.observeAsState(emptyList())
 
-        // التحقق من حالة الـ favorite بناءً على الـ list
         val isFavorite = favoriteMealsList.any { it.mealId == meal.idMeal }
 
         val iconColor = if (isFavorite) {
@@ -462,7 +508,10 @@ class home : Fragment() {
             Card(
                 modifier = Modifier.size(370.dp),
                 onClick = { goToDetailsMeal(meal.idMeal) },
-                elevation = CardDefaults.cardElevation(10.dp)
+                elevation = CardDefaults.cardElevation(10.dp),border = BorderStroke(
+                    width = 2.dp,
+                    color = Color(0xFF1abc9c)
+                )
             )
             {
 
@@ -509,6 +558,17 @@ class home : Fragment() {
 
                     }
                     if (meal != null) {
+                        Box(modifier = Modifier.fillMaxSize()
+                            .offset(x = (289.5).dp, y = (5).dp),
+                        ){
+
+                            Icon(
+                                contentDescription = "icon_favourite",
+                                imageVector = Icons.Default.Favorite,
+                                tint = Color.Black,
+                                modifier = Modifier
+                                    .size(70.dp)
+                            )}
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -530,7 +590,6 @@ class home : Fragment() {
                                         indication = null,
                                         onClick = {
                                             if (isFavorite) {
-                                                // حذف من المفضلة
                                                 favoriteMealsViewModel.deleteMeal(
                                                     FavoriteMeals(
                                                         meal.idMeal,
@@ -546,7 +605,6 @@ class home : Fragment() {
                                                     )
                                                     .show()
                                             } else {
-                                                // إضافة للمفضلة
                                                 favoriteMealsViewModel.addFavoriteMeal(
                                                     FavoriteMeals(
                                                         meal.idMeal,
@@ -579,7 +637,8 @@ class home : Fragment() {
     @Composable
     fun CalenderButton() {
         Spacer(Modifier.height(50.dp))
-        Text(text = "Set special Days! 🗓️", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Set special Days! 🗓️", fontSize = 30.sp, fontWeight = FontWeight.Bold,
+            color = Color.White)
         Spacer(Modifier.height(20.dp))
         Column(modifier = Modifier, horizontalAlignment = Alignment.Start) {
 
@@ -590,7 +649,12 @@ class home : Fragment() {
                 Card(
                     onClick = { goToCalenderFragment() },
                     modifier = Modifier.padding(0.dp),
-                    elevation = CardDefaults.cardElevation(20.dp)
+                    elevation = CardDefaults.cardElevation(20.dp),
+                    colors = CardDefaults.cardColors(Color(0xFF223a4e)),
+                    border = BorderStroke(
+                        width = 2.dp,
+                        color = Color(0xFF1abc9c)
+                    )
                 )
                 {
                     Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
@@ -598,12 +662,14 @@ class home : Fragment() {
                             Text(
                                 " \nTurn Any Day into \n a Step-by-Step \n Recipe \n",
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
                             )
                             Text(
                                 " Cook Anyday You Want!\n",
                                 fontSize = 20.sp,
-                                fontStyle = FontStyle.Italic
+                                fontStyle = FontStyle.Italic,
+                                color = Color.White
                             )
                             Row {
                                 Spacer(Modifier.size(10.dp))
@@ -611,6 +677,7 @@ class home : Fragment() {
                                     "Log Now\n",
                                     fontSize = 20.sp,
                                     textDecoration = TextDecoration.Underline,
+                                    color = Color.White,
                                     modifier = Modifier.clickable(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null,
@@ -621,7 +688,7 @@ class home : Fragment() {
 
                         }
                         //Spacer(modifier = Modifier.width(150.dp))
-                        val imageCalender = painterResource(id = R.drawable.untitled_design)
+                        val imageCalender = painterResource(id = R.drawable.thecalenderimage)
                         Image(
                             painter = imageCalender,
                             contentDescription = "imageCalender",
@@ -639,7 +706,8 @@ class home : Fragment() {
     fun ForYouSection(meals: List<Detailed_Meal>) {
         Column(modifier = Modifier.padding(vertical = 12.dp)) {
 
-            Text("For You! ✨", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text("For You! ✨", fontSize = 30.sp, fontWeight = FontWeight.Bold,
+                color = Color.White)
 
             LazyRow {
                 items(meals) { Rmeal ->
@@ -695,7 +763,6 @@ class home : Fragment() {
     }
 
     fun prepareFavoriteButton() {
-        // جلب البيانات من الـ database
         favoriteMealsViewModel.getFavoriteMeals()
 
         favoriteMealsViewModel.favorite_meals.observe(viewLifecycleOwner) { Ids ->
@@ -710,3 +777,4 @@ class home : Fragment() {
     }
 
 }
+
