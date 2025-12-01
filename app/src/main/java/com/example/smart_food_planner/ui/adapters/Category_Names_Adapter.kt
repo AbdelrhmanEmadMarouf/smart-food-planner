@@ -61,7 +61,7 @@ class Category_Names_Adapter(
                 val activity = holder.itemView.context as? AppCompatActivity
                 activity?.supportFragmentManager
                     ?.beginTransaction()
-                    ?.add(R.id.container, fragment)
+                    ?.replace(R.id.container, fragment)
                     ?.addToBackStack(null)
                     ?.commit()
             }

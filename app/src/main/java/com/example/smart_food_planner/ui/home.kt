@@ -504,7 +504,7 @@ class home : Fragment() {
         val iconColor = if (isFavorite) {
             Color(0xFFFF0000)
         } else
-            Color(0xFFdddedc)
+            Color(0xFFeeeee4)
 
 
         Box(
@@ -533,7 +533,7 @@ class home : Fragment() {
 
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     } else {
-
+                        // this is edit
                         AsyncImage(
                             model = meal.strMealThumb,
                             contentDescription = meal.strMeal,
@@ -564,17 +564,7 @@ class home : Fragment() {
 
                     }
                     if (meal != null) {
-                        Box(modifier = Modifier.fillMaxSize()
-                            .offset(x = (289.5).dp, y = (5).dp),
-                        ){
 
-                            Icon(
-                                contentDescription = "icon_favourite",
-                                imageVector = Icons.Default.Favorite,
-                                tint = Color.Black,
-                                modifier = Modifier
-                                    .size(70.dp)
-                            )}
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
