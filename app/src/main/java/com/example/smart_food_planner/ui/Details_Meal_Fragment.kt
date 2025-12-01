@@ -234,31 +234,38 @@ class Details_Meal_Fragment : Fragment() {
 
 
         favoriteButton.setOnClickListener {
-            animateFavoriteButton(favoriteButton)
 
-            if (favoriteButtonIsSelected) {
-                favoriteButtonIsSelected = false
-                favoriteButton.setBackgroundResource(R.drawable.fav_button_unselected)
-                favoriteButton.text = "♡  Add to Favorites"
 
-                favoriteMealsViewModel.deleteMeal(
-                    FavoriteMeals(
-                        currentMeal.idMeal,
-                        currentMeal.strMeal,
-                        currentMeal.strMealThumb
+            if(favoriteButton.isEnabled == true) {
+                animateFavoriteButton(favoriteButton)
+
+
+                if (favoriteButtonIsSelected && favoriteButton.isEnabled) {
+
+
+                    favoriteButtonIsSelected = false
+                    favoriteButton.setBackgroundResource(R.drawable.fav_button_unselected)
+                    favoriteButton.text = "♡  Add to Favorites"
+
+                    favoriteMealsViewModel.deleteMeal(
+                        FavoriteMeals(
+                            currentMeal.idMeal,
+                            currentMeal.strMeal,
+                            currentMeal.strMealThumb
+                        )
                     )
-                )
-            } else {
-                favoriteButtonIsSelected = true
-                favoriteButton.setBackgroundResource(R.drawable.fav_button_selected)
-                favoriteButton.text = "Remove From Favorites"
-                favoriteMealsViewModel.addFavoriteMeal(
-                    FavoriteMeals(
-                        currentMeal.idMeal,
-                        currentMeal.strMeal,
-                        currentMeal.strMealThumb
+                } else {
+                    favoriteButtonIsSelected = true
+                    favoriteButton.setBackgroundResource(R.drawable.fav_button_selected)
+                    favoriteButton.text = "Remove From Favorites"
+                    favoriteMealsViewModel.addFavoriteMeal(
+                        FavoriteMeals(
+                            currentMeal.idMeal,
+                            currentMeal.strMeal,
+                            currentMeal.strMealThumb
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -440,6 +447,7 @@ class Details_Meal_Fragment : Fragment() {
 
         setCorrectFlag()
 
+        favoriteButton.isEnabled = true
 
     }
 

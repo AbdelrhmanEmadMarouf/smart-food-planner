@@ -90,7 +90,7 @@
                             android:layout_height="33dp"
                             android:layout_marginEnd="8dp"
                             android:contentDescription="country icon"
-                            android:src="@drawable/egyptian_icon"
+                            android:src="@drawable/unknown_flage"
                             app:tint="@null" />
 
                         <TextView
@@ -147,7 +147,9 @@
                     android:text="♡  Add to Favorites"
                     android:textAllCaps="false"
                     android:textColor="@color/fav_text_color"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:enabled="false" />
+
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

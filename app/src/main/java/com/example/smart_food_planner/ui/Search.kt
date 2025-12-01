@@ -143,7 +143,7 @@ class Search : Fragment() {
 
     private fun loadFragment(fragment: Fragment) {
         childFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainerView, fragment)
+            .replace(R.id.fragmentContainerView, fragment)
             .commit()
     }
 
