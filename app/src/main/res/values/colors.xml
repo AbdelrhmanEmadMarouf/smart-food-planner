@@ -1,10 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="card_dark_bg">#233D52</color>
+    <color name="search_icon_tint">#D9EAE8</color>
+    <color name="search_hint">#B7C1C3</color>
+    <color name="segment_selected_text">#00332A</color>
+    <color name="segment_unselected_text">#BFD6D8</color>
+    <color name="info_strip">#223A4E</color>
+    <color name="accent_neon">#1ABC9C</color>
+    <color name="card_bg">#223647</color>
+    <color name="thumb_bg">#E7EEF1</color>
+    <color name="title_white">#FFFFFF</color>
+    <color name="details_green">#1EB28A</color>
+    <color name="details_text">#052922</color>
+    <color name="heart_tint">#FFFFFF</color>
+    <color name="app_background">#0F1723</color>
+    <color name="shell_card_bg">#17353C</color>
+    <color name="muted_white">#9FB7BC</color>
+    <color name="purple_circle">#6C4BB3</color>
+
+
+    <color name="bg_gradient_start">#072025</color>
+    <color name="bg_gradient_mid">#0E3B3A</color>
+    <color name="bg_gradient_end">#134F4E</color>
+
+
+    <color name="surface_dark">#123D43</color>
+    <color name="card_bg_elevated">#193f47</color>
+
+    <!-- Accent colors -->
+    <color name="accent_green">#11D6A0</color>
+    <color name="accent_green_dark">#0FB28A</color>
+    <color name="accent_purple">#B051E6</color>
+    <color name="badge_green">#1EA07E</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B8D6D2</color>
+    <color name="text_muted">#9DB1AE</color>
+
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_30">#4DFFFFFF</color>
+    <color name="divider">#15363A</color>
+
+
+    <color name="ingredient_card">#0F3940</color>
+
+
+    <color name="play_overlay">#1E3E3D</color>
+
+
+    <color name="danger">#FF5C5C</color>
+
+
+
+    <color name="card_blue_dark">#163a45</color>
+    <color name="card_blue">#1f3944</color>
+    <color name="card_blue_light">#25444e</color>
+
+    <color name="pill_green">#1EA07E</color>
+    <color name="pill_green_dark">#0F7E61</color>
+
+    <color name="fav_purple">#A94BD6</color>
+    <color name="fav_purple_dark">#8A37C6</color>
+    <color name="fav_pink_selected">#FF6B97</color>
+    <color name="fav_selected_border">#FFFFFF</color>
+
+
+    <color name="button_dark_top">#17353C</color>
+    <color name="button_dark_bottom">#0F3440</color>
+    <color name="button_stroke">#22393F</color>
+
+    <color name="card_dark_blue">#0F2E3A</color>
+
+
+    <color name="bn_bg">#0E2430</color>
+    <color name="bn_surface">#0F3942</color>
+    <color name="bn_accent">#13C7A6</color>
+    <color name="bn_text">#BFDCE0</color>
+    <color name="bn_text_selected">#FFFFFF</color>
+    <color name="bn_icon_unselected">#9FB8BC</color>
+    <color name="bn_shadow">#0B000000</color>
+    <color name="bn_icon_selected">#1CC8A0</color>
+
+
+
 </resources>
+
+

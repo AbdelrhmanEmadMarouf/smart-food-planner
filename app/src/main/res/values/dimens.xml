@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+
+    <dimen name="card_corner">16dp</dimen>
+    <dimen name="card_elevation">6dp</dimen>
+
+    <dimen name="ingredient_card_width">120dp</dimen>
+    <dimen name="ingredient_card_height">140dp</dimen>
+
+    <dimen name="avatar_size">56dp</dimen>
+
+    <dimen name="play_button_size">64dp</dimen>
+</resources>

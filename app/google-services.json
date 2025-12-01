@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616797407557",
+    "project_id": "smarfoodplanner",
+    "storage_bucket": "smarfoodplanner.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616797407557:android:0a4dfe963ee02b1738d62c",
+        "android_client_info": {
+          "package_name": "com.example.smart_food_planner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6XSJ-WIKnAjwMBdLe56LOw324DA_uxK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
