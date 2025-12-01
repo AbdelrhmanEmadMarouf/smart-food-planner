@@ -70,7 +70,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-
+import androidx.compose.runtime.getValue
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.*
 var favoriteButtonIsSelected = false
 
 // Data class for category with meals
@@ -179,7 +182,6 @@ class home : Fragment() {
                 val now = System.currentTimeMillis()
                 val twentyFourHoursMillis = 24 * 60 * 60 * 1000
 
-                // 🔹 الوجبة اليومية
                 val lastSavedMeal = DailyMealStorage.getSavedMeal(context)
                 val lastTimestamp = DailyMealStorage.getSavedTimestamp(context)
 
@@ -241,13 +243,17 @@ class home : Fragment() {
                     Log.d("TEST", "Loaded ${categoriesWithMeals.size} categories with meals")
                 }
             }
+            val compositon by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie))
 
             if (isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    LottieAnimation(
+                        compositon,
+                        modifier = Modifier.size(100.dp)
+                            )
                 }
             } else {
                 HomeScreen(
@@ -660,7 +666,7 @@ class home : Fragment() {
                     Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
                         Column {
                             Text(
-                                " \nTurn Any Day into \n a Step-by-Step \n Recipe \n",
+                                " \n Turn Any Day into \n a Step-by-Step \n Recipe \n",
                                 fontSize = 25.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -740,7 +746,7 @@ class home : Fragment() {
         val activity = context as? AppCompatActivity
         activity?.supportFragmentManager
             ?.beginTransaction()
-            ?.replace(R.id.container, fragment)
+            ?.add(R.id.container, fragment)
             ?.addToBackStack(null)
             ?.commit()
     }
@@ -757,7 +763,7 @@ class home : Fragment() {
         val activity = context as? AppCompatActivity
         activity?.supportFragmentManager
             ?.beginTransaction()
-            ?.replace(R.id.container, fragment)
+            ?.add(R.id.container, fragment)
             ?.addToBackStack(null)
             ?.commit()
     }

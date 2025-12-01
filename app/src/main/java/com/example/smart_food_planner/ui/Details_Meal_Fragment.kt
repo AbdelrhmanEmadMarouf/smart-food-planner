@@ -323,7 +323,7 @@ class Details_Meal_Fragment : Fragment() {
                 main.setBottomNavVisible(false)
                 main.supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.container, fragment)
+                    .add(R.id.container, fragment)
                     .addToBackStack(null)
                     .commit()
             }

@@ -69,7 +69,7 @@ class LoginFragment : Fragment() {
         // Navigate to Register page
         createAccountText.setOnClickListener {
             activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.fragmentContainer, RegisterFragment())
+                ?.add(R.id.fragmentContainer, RegisterFragment())
                 ?.addToBackStack(null)
                 ?.commit()
         }

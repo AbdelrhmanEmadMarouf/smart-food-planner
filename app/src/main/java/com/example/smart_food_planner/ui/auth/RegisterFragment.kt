@@ -48,7 +48,7 @@ class RegisterFragment : Fragment() {
 
         tvLogin.setOnClickListener {
             activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.fragmentContainer, LoginFragment())
+                ?.add(R.id.fragmentContainer, LoginFragment())
                 ?.addToBackStack(null)
                 ?.commit()
         }

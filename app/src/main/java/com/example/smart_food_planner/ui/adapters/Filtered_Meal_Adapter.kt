@@ -61,7 +61,7 @@ class Filtered_Meal_Adapter(
             val activity = holder.itemView.context as? AppCompatActivity
             activity?.supportFragmentManager
                 ?.beginTransaction()
-                ?.replace(R.id.container, fragment)
+                ?.add(R.id.container, fragment)
                 ?.addToBackStack(null)
                 ?.commit()
 

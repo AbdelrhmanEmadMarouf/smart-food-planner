@@ -62,6 +62,9 @@ dependencies {
     //Async
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    //Lottie
+    implementation("com.airbnb.android:lottie:6.1.0")
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
     // youtube library
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
 

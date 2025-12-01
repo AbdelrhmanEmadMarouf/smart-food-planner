@@ -80,35 +80,17 @@ class AI : Fragment() {
         }
 
         backToHome.setOnClickListener {
-
-
-
-            val fragment = Details_Meal_Fragment()
-
-            val args = bundleOf(
-                "Meal Id" to MealId
-            )
-            fragment.arguments = args
-
-            val activity =context as? AppCompatActivity
-            activity?.supportFragmentManager
-                ?.beginTransaction()
-                ?.replace(R.id.container, fragment)
-                ?.addToBackStack(null)
-                ?.commit()
-
-
+            val fragment = Details_Meal_Fragment().apply {
+                arguments = bundleOf("Meal Id" to MealId)
+            }
 
             (requireActivity() as? MainActivity)?.let { main ->
                 main.setBottomNavVisible(true)
-                main.supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, fragment)
+                main.supportFragmentManager.beginTransaction()
+                    .add(R.id.container, fragment)
                     .addToBackStack(null)
                     .commit()
             }
-
-
         }
 
         chatViewModel.botReply.observe(viewLifecycleOwner){

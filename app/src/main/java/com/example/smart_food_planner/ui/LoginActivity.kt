@@ -22,7 +22,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, LoginFragment())
+                .add(R.id.fragmentContainer, LoginFragment())
                 .commit()
         }
 

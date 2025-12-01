@@ -143,7 +143,7 @@ class Search : Fragment() {
 
     private fun loadFragment(fragment: Fragment) {
         childFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, fragment)
+            .add(R.id.fragmentContainerView, fragment)
             .commit()
     }
 
@@ -156,7 +156,7 @@ class Search : Fragment() {
         fragment.arguments = bundleOf("search query" to searchedQuery)
 
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, fragment)
+            .add(R.id.fragmentContainerView, fragment)
             .addToBackStack(null)
             .commit()
 

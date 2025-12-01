@@ -524,7 +524,7 @@ class Calender : Fragment() {
         val activity = requireContext() as? AppCompatActivity
         activity?.supportFragmentManager
             ?.beginTransaction()
-            ?.replace(R.id.container, fragment)
+            ?.add(R.id.container, fragment)
             ?.addToBackStack(null)
             ?.commit()
 
@@ -643,7 +643,7 @@ class Calender : Fragment() {
         val activity = requireContext() as? AppCompatActivity
         activity?.supportFragmentManager
             ?.beginTransaction()
-            ?.replace(R.id.container, fragment)
+            ?.add(R.id.container, fragment)
             ?.addToBackStack(null)
             ?.commit()
 

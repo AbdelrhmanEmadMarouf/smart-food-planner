@@ -73,7 +73,7 @@ class Filtered_Meals : Fragment() {
                 val activity = context as? AppCompatActivity
                 activity?.supportFragmentManager
                     ?.beginTransaction()
-                    ?.replace(R.id.container, fragment)
+                    ?.add(R.id.container, fragment)
                     ?.addToBackStack(null)
                     ?.commit()
 
@@ -83,7 +83,7 @@ class Filtered_Meals : Fragment() {
                 val activity = context as? AppCompatActivity
                 activity?.supportFragmentManager
                     ?.beginTransaction()
-                    ?.replace(R.id.container, fragment)
+                    ?.add(R.id.container, fragment)
                     ?.addToBackStack(null)
                     ?.commit()
             }
