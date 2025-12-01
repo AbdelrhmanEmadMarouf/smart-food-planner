@@ -45,7 +45,6 @@ class Category_Names_Adapter(
 
         holder.recyclerViewItem.setOnClickListener {
 
-            holder.recyclerViewItem.setOnClickListener {
 
 
 
@@ -64,7 +63,7 @@ class Category_Names_Adapter(
                     ?.add(R.id.container, fragment)
                     ?.addToBackStack(null)
                     ?.commit()
-            }
+
 
         }
 

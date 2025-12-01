@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -49,7 +50,7 @@ class Filtered_Meal_Adapter(
             .load(meal.strMealThumb)
             .into(holder.mealImage)
 
-        holder.mealDetailsButton.setOnClickListener {
+        holder.recyclerViewItem.setOnClickListener {
 
             val fragment = Details_Meal_Fragment()
 
@@ -77,6 +78,8 @@ class Filtered_Meal_Adapter(
         val mealImage: ImageView = itemView.findViewById(R.id.Meal_Image)
         val mealTitle: TextView = itemView.findViewById(R.id.Meal_Name)
         val mealDetailsButton: ImageButton = itemView.findViewById(R.id.meal_details_button)
+
+        val recyclerViewItem : ConstraintLayout = itemView.findViewById(R.id.Recycler_View_Item_meal)
 
     }
 
